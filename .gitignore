@@ -1,0 +1,39 @@
+# ==============================================================================
+# TrioLang .gitignore
+# ==============================================================================
+
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+!**/.env.example
+
+venv/
+.venv/
+env/
+ENV/
+
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+triolang.db
+
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
