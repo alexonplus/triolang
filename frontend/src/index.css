@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-emerald-500 selection:text-white;
+  }
+}
+
+.btn-3d {
+  transition: all 0.1s ease;
+  position: relative;
+  user-select: none;
+}
+
+.btn-3d:active {
+  transform: translateY(4px);
+  box-shadow: none !important;
+}
+
+.btn-3d-green {
+  background-color: #58cc02;
+  box-shadow: 0 4px 0 #46a302;
+  color: white;
+}
+
+.btn-3d-green:hover {
+  background-color: #61e002;
+}
+
+.btn-3d-blue {
+  background-color: #1cb0f6;
+  box-shadow: 0 4px 0 #1899d6;
+  color: white;
+}
+
+.btn-3d-blue:hover {
+  background-color: #23bbfd;
+}
+
+.btn-3d-yellow {
+  background-color: #ffc800;
+  box-shadow: 0 4px 0 #e5a400;
+  color: #4b4b4b;
+}
+
+.btn-3d-red {
+  background-color: #ff4b4b;
+  box-shadow: 0 4px 0 #ea2b2b;
+  color: white;
+}
+
+.btn-3d-tile {
+  background-color: #1e293b;
+  box-shadow: 0 4px 0 #0f172a;
+  border: 2px solid #334155;
+  color: #f1f5f9;
+}
+
+.btn-3d-tile:hover {
+  background-color: #334155;
+  border-color: #475569;
+}
+
+.btn-3d-tile-selected {
+  background-color: #0f172a;
+  box-shadow: none;
+  border-color: #1e293b;
+  color: #64748b;
+  transform: translateY(3px);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
