@@ -97,3 +97,25 @@ export interface GenerateLessonResponse {
   exercise_count: number;
   source: string;
 }
+
+export interface PlacementQuestionItem {
+  order_index: number;
+  prompt: string;
+  english_hint: string;
+  grammar_target: string;
+}
+
+export interface PlacementDialogueTurn {
+  sender: 'AI' | 'User';
+  text: string;
+}
+
+export interface PlacementEvaluationResponse {
+  cefr_level: string;
+  level_title: string;
+  strengths: string[];
+  weaknesses: string[];
+  message: string;
+  units_generated_count: number;
+}
+

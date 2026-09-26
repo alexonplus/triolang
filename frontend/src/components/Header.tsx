@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Heart, Gem, Bot, RefreshCw } from 'lucide-react';
+import { Flame, Heart, Gem, Bot, RefreshCw, Target } from 'lucide-react';
 import type { Course, UserStats } from '../types';
 import { soundEffects } from '../services/audio';
 
@@ -9,6 +9,7 @@ interface HeaderProps {
   currentCourseId: string;
   onSelectCourse: (courseId: string) => void;
   onOpenAITutor: () => void;
+  onOpenPlacementTest?: () => void;
   onRefillHearts: () => void;
 }
 
@@ -18,6 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
   currentCourseId,
   onSelectCourse,
   onOpenAITutor,
+  onOpenPlacementTest,
   onRefillHearts,
 }) => {
   const currentCourse = courses.find((c) => c.id === currentCourseId) || courses[0];
@@ -92,6 +94,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
           </div>
+
+          {onOpenPlacementTest && (
+            <button
+              onClick={() => {
+                soundEffects.playClickSound();
+                onOpenPlacementTest();
+              }}
+              title="Take AI Diagnostic Placement Test"
+              className="flex items-center gap-1.5 px-3 py-1.5 btn-3d bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-[0_3px_0_#b45309] text-sm"
+            >
+              <Target className="w-4 h-4" />
+              <span className="hidden sm:inline">Level Test</span>
+            </button>
+          )}
 
           <button
             onClick={() => {

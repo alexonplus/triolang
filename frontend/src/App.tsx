@@ -7,6 +7,7 @@ import { ExerciseSession } from './components/ExerciseSession';
 import { LessonCompleteModal } from './components/LessonCompleteModal';
 import { AITutorModal } from './components/AITutorModal';
 import { GenerateLessonModal } from './components/GenerateLessonModal';
+import { PlacementTestModal } from './components/PlacementTestModal';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -19,6 +20,7 @@ export const App: React.FC = () => {
   const [completeSummary, setCompleteSummary] = useState<LessonCompleteResponse | null>(null);
   const [isAITutorOpen, setIsAITutorOpen] = useState(false);
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+  const [isPlacementModalOpen, setIsPlacementModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -156,6 +158,7 @@ export const App: React.FC = () => {
         currentCourseId={activeCourseId}
         onSelectCourse={handleSelectCourse}
         onOpenAITutor={() => setIsAITutorOpen(true)}
+        onOpenPlacementTest={() => setIsPlacementModalOpen(true)}
         onRefillHearts={handleRefillHearts}
       />
 
@@ -171,6 +174,18 @@ export const App: React.FC = () => {
           onOpenGenerateModal={() => setIsGenerateModalOpen(true)}
         />
       </main>
+
+      {isPlacementModalOpen && (
+        <PlacementTestModal
+          courseId={activeCourseId}
+          courseTitle={activeCourse?.native_title || 'Swedish'}
+          onClose={() => setIsPlacementModalOpen(false)}
+          onCustomPathGenerated={async () => {
+            const unitsData = await api.getUnits(activeCourseId);
+            setUnits(unitsData);
+          }}
+        />
+      )}
 
       {isGenerateModalOpen && (
         <GenerateLessonModal

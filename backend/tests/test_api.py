@@ -100,3 +100,30 @@ def test_generate_ai_lesson_endpoint():
         data = response.json()
         assert data["success"] is True
         assert data["exercise_count"] >= 1
+
+
+def test_diagnostic_placement_endpoint():
+    with TestClient(app) as client:
+        # 1. Test probe questions
+        q_resp = client.get("/api/ai/placement-questions?course_id=sv-from-en")
+        assert q_resp.status_code == 200
+        questions = q_resp.json()
+        assert len(questions) >= 3
+
+        # 2. Test diagnostic evaluation
+        eval_resp = client.post(
+            "/api/ai/diagnostic-evaluate",
+            json={
+                "course_id": "sv-from-en",
+                "dialogue": [
+                    {"sender": "AI", "text": "Hej! Berätta lite om dig själv"},
+                    {"sender": "User", "text": "Jag heter Alex och bor i Stockholm. Jag gillar att programmera och dricka kaffe."},
+                    {"sender": "AI", "text": "Vad gjorde du igår?"},
+                    {"sender": "User", "text": "Igår jag åt en god pizza och tittade på film med mina vänner."},
+                ]
+            }
+        )
+        assert eval_resp.status_code == 200
+        data = eval_resp.json()
+        assert "cefr_level" in data
+        assert data["units_generated_count"] >= 1

@@ -24,10 +24,14 @@ from app.models.schemas import (
     AITutorResponse,
     GenerateLessonRequest,
     GenerateLessonResponse,
+    PlacementQuestionItem,
+    PlacementEvaluateRequest,
+    PlacementEvaluationResponse,
 )
 from app.services.game_engine import evaluate_exercise_answer, award_lesson_rewards
 from app.services.ai_tutor import ask_ai_tutor
 from app.services.lesson_generator import generate_and_save_ai_lesson
+from app.services.placement_service import get_placement_questions, evaluate_and_generate_personalized_path
 from app.core.config import settings
 
 router = APIRouter()
@@ -241,6 +245,9 @@ def complete_lesson(payload: LessonCompleteRequest, db: Session = Depends(get_db
     )
 
 
+# ------------------------------------------------------------------------------
+# 4. AI Grammar Tutor & Dynamic Lesson Generator Endpoints
+# ------------------------------------------------------------------------------
 @router.post("/ai/tutor", response_model=AITutorResponse, summary="Ask AI Tutor for grammar help")
 async def ask_tutor_endpoint(payload: AITutorQuestionRequest):
     tutor_data = await ask_ai_tutor(
@@ -267,4 +274,35 @@ async def generate_lesson_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Lesson generation failed: {str(err)}",
+        )
+
+
+# ------------------------------------------------------------------------------
+# 5. Diagnostic Placement Test Endpoints
+# ------------------------------------------------------------------------------
+@router.get("/ai/placement-questions", response_model=List[PlacementQuestionItem], summary="Get placement probe questions")
+def get_placement_questions_endpoint(course_id: str = "sv-from-en", db: Session = Depends(get_db)):
+    course = db.query(Course).filter(Course.id == course_id).first()
+    target_lang = course.target_language if course else "sv"
+    questions = get_placement_questions(target_lang)
+    return [PlacementQuestionItem(**q) for q in questions]
+
+
+@router.post("/ai/diagnostic-evaluate", response_model=PlacementEvaluationResponse, summary="Evaluate diagnostic test & generate custom path")
+async def evaluate_diagnostic_endpoint(
+    payload: PlacementEvaluateRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        transcript = [{"sender": turn.sender, "text": turn.text} for turn in payload.dialogue]
+        result = await evaluate_and_generate_personalized_path(
+            db=db,
+            course_id=payload.course_id,
+            dialogue_transcript=transcript,
+        )
+        return PlacementEvaluationResponse(**result)
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Diagnostic evaluation failed: {str(err)}",
         )

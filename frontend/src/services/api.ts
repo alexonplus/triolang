@@ -7,6 +7,9 @@ import type {
   LessonCompleteResponse,
   AITutorResponse,
   GenerateLessonResponse,
+  PlacementQuestionItem,
+  PlacementDialogueTurn,
+  PlacementEvaluationResponse,
 } from '../types';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
@@ -86,6 +89,18 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({
         topic,
+        course_id: courseId,
+      }),
+    }),
+
+  getPlacementQuestions: (courseId: string = 'sv-from-en') =>
+    fetchJson<PlacementQuestionItem[]>(`/ai/placement-questions?course_id=${encodeURIComponent(courseId)}`),
+
+  evaluatePlacementTest: (dialogue: PlacementDialogueTurn[], courseId: string = 'sv-from-en') =>
+    fetchJson<PlacementEvaluationResponse>('/ai/diagnostic-evaluate', {
+      method: 'POST',
+      body: JSON.stringify({
+        dialogue,
         course_id: courseId,
       }),
     }),

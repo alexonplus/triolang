@@ -141,3 +141,33 @@ class GenerateLessonResponse(BaseModel):
     swedish_title: str
     exercise_count: int
     source: str
+
+
+# ------------------------------------------------------------------------------
+# Diagnostic Placement Test Schemas
+# ------------------------------------------------------------------------------
+class PlacementQuestionItem(BaseModel):
+    id: str
+    prompt: str
+    english_hint: str
+    level_target: str
+
+
+class PlacementDialogueTurn(BaseModel):
+    sender: str
+    text: str
+
+
+class PlacementEvaluateRequest(BaseModel):
+    course_id: str = "sv-from-en"
+    dialogue: List[PlacementDialogueTurn]
+
+
+class PlacementEvaluationResponse(BaseModel):
+    cefr_level: str
+    level_title: str
+    vocabulary_score: str
+    strengths: List[str]
+    weaknesses: List[str]
+    units_generated_count: int
+    message: str
