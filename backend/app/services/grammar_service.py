@@ -12,7 +12,7 @@ import logging
 from typing import List, Optional, Dict, Any
 
 from app.core.config import settings
-from app.data.grammar_data import GRAMMAR_TOPICS
+from app.data.grammar import GRAMMAR_TOPICS
 from app.models.schemas import (
     GrammarTopicSummary,
     GrammarTopicDetail,

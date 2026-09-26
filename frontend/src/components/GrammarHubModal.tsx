@@ -10,7 +10,11 @@ import {
   Loader2,
   ArrowRight,
   Layers,
+  Award,
+  RotateCcw,
+  Flame,
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { api } from '../services/api';
 import { speakText, soundEffects } from '../services/audio';
 import type {
@@ -39,13 +43,15 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
   const [isLoadingTopics, setIsLoadingTopics] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
 
-  // Drill exercise mode
+  // Drill practice state
   const [isDrillMode, setIsDrillMode] = useState(false);
   const [drillExercises, setDrillExercises] = useState<GrammarExerciseItem[]>([]);
   const [currentDrillIndex, setCurrentDrillIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [drillAnswerSubmitted, setDrillAnswerSubmitted] = useState(false);
   const [isGeneratingAIDrills, setIsGeneratingAIDrills] = useState(false);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+  const [isDrillCompleted, setIsDrillCompleted] = useState(false);
 
   // Load topics list when language or level changes
   useEffect(() => {
@@ -56,7 +62,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
         const data = await api.getGrammarTopics(selectedLanguage, levelParam);
         setTopics(data);
 
-        // Auto-select first topic if none selected
+        // Auto-select first topic if none selected or not in filtered list
         if (data.length > 0 && (!selectedTopicId || !data.some((t) => t.id === selectedTopicId))) {
           setSelectedTopicId(data[0].id);
         }
@@ -79,6 +85,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
         const detail = await api.getGrammarTopicDetail(selectedTopicId);
         setActiveTopicDetail(detail);
         setIsDrillMode(false);
+        setIsDrillCompleted(false);
       } catch (err) {
         console.error('Failed to load topic detail:', err);
       } finally {
@@ -102,8 +109,10 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
         setDrillExercises(drillData.exercises);
       }
       setCurrentDrillIndex(0);
+      setCorrectAnswersCount(0);
       setSelectedOption(null);
       setDrillAnswerSubmitted(false);
+      setIsDrillCompleted(false);
       setIsDrillMode(true);
     } catch (err) {
       console.error('Failed to load practice drills:', err);
@@ -125,6 +134,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
 
     setDrillAnswerSubmitted(true);
     if (isCorrect) {
+      setCorrectAnswersCount((prev) => prev + 1);
       soundEffects.playCorrectSound();
     } else {
       soundEffects.playIncorrectSound();
@@ -139,11 +149,22 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
       setDrillAnswerSubmitted(false);
     } else {
       soundEffects.playVictorySound();
-      setIsDrillMode(false);
+      try {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.6 },
+        });
+      } catch {
+        // Confetti fallback
+      }
+      setIsDrillCompleted(true);
     }
   };
 
   const currentExercise = drillExercises[currentDrillIndex];
+  const drillProgressPercent = drillExercises.length > 0 ? ((currentDrillIndex + 1) / drillExercises.length) * 100 : 0;
+  const accuracyPercentage = drillExercises.length > 0 ? Math.round((correctAnswersCount / drillExercises.length) * 100) : 100;
 
   return (
     <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
@@ -158,12 +179,12 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
             <div>
               <h3 className="font-black text-white text-lg flex items-center gap-2">
                 <span>Grammar Hub</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold">
                   CEFR A1–C1
                 </span>
               </h3>
               <p className="text-xs text-slate-400">
-                Interactive Grammar Rules, Formulas & Adaptive Practice Drills
+                Structured Rules, Concrete Formulas & In-Depth Practice Drills
               </p>
             </div>
           </div>
@@ -255,7 +276,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                   }}
                   className={`w-full text-left p-3 rounded-2xl border transition flex flex-col gap-1 ${
                     selectedTopicId === t.id
-                      ? 'bg-indigo-600/15 border-indigo-500 text-white shadow-lg'
+                      ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-lg ring-1 ring-indigo-500/50'
                       : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
                   }`}
                 >
@@ -263,11 +284,11 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                     <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-slate-700 text-amber-300 uppercase">
                       {t.level}
                     </span>
-                    <span className="text-[11px] font-mono text-indigo-400 font-semibold truncate max-w-[120px]">
-                      {t.formula.split('|')[0]}
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      10 Drills
                     </span>
                   </div>
-                  <div className="font-bold text-xs line-clamp-1 mt-0.5">{t.title}</div>
+                  <div className="font-bold text-xs line-clamp-1 mt-1">{t.title}</div>
                   <div className="text-[11px] text-slate-400 line-clamp-2 leading-tight">
                     {t.summary}
                   </div>
@@ -283,100 +304,161 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                 <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
                 <span className="text-slate-400 text-sm">Loading rule breakdown...</span>
               </div>
-            ) : isDrillMode && currentExercise ? (
-              /* --- Drill Practice Mode --- */
-              <div className="max-w-xl mx-auto space-y-6 animate-in fade-in">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <div>
-                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                      Interactive Practice Drill
-                    </span>
-                    <h3 className="text-lg font-black text-white">{activeTopicDetail?.title}</h3>
-                  </div>
-                  <button
-                    onClick={() => setIsDrillMode(false)}
-                    className="text-xs font-bold text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg"
-                  >
-                    Back to Theory
-                  </button>
-                </div>
-
-                <div className="bg-slate-800/90 border border-slate-700 p-6 rounded-3xl space-y-5 shadow-xl">
-                  <div className="text-xs font-bold text-slate-400">
-                    Question {currentDrillIndex + 1} of {drillExercises.length}
+            ) : isDrillMode ? (
+              /* --- Drill Mode: Finished or Active --- */
+              isDrillCompleted ? (
+                /* Celebration Summary */
+                <div className="max-w-md mx-auto py-8 text-center space-y-6 animate-in zoom-in-95">
+                  <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-emerald-400 flex items-center justify-center text-slate-950 shadow-xl">
+                    <Award className="w-10 h-10" />
                   </div>
 
-                  <div className="text-base font-bold text-white leading-relaxed">
-                    {currentExercise.prompt}
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-black text-white">Drill Session Completed!</h2>
+                    <p className="text-sm text-slate-400">
+                      You practiced <span className="text-indigo-300 font-bold">{activeTopicDetail?.title}</span>
+                    </p>
                   </div>
 
-                  {/* Options */}
-                  <div className="space-y-2.5">
-                    {currentExercise.options?.map((opt, idx) => {
-                      const isSelected = selectedOption === opt;
-                      const isCorrect = opt.trim().toLowerCase() === currentExercise.correct_answer.trim().toLowerCase();
-
-                      let btnStyle = 'bg-slate-900 border-slate-700 text-slate-200 hover:border-slate-500';
-                      if (drillAnswerSubmitted) {
-                        if (isCorrect) {
-                          btnStyle = 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold';
-                        } else if (isSelected) {
-                          btnStyle = 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold';
-                        }
-                      } else if (isSelected) {
-                        btnStyle = 'bg-indigo-600/30 border-indigo-500 text-white font-bold ring-2 ring-indigo-500/50';
-                      }
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleSelectDrillOption(opt)}
-                          disabled={drillAnswerSubmitted}
-                          className={`w-full text-left p-3.5 rounded-2xl border transition flex items-center justify-between text-sm ${btnStyle}`}
-                        >
-                          <span>{opt}</span>
-                          {drillAnswerSubmitted && isCorrect && (
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Explanation feedback */}
-                  {drillAnswerSubmitted && (
-                    <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-700 space-y-1.5 animate-in fade-in">
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                        Grammar Explanation:
-                      </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">
-                        {currentExercise.explanation}
-                      </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-4 bg-slate-800 rounded-2xl border border-slate-700">
+                      <div className="text-xs text-slate-400 font-bold uppercase">Accuracy</div>
+                      <div className="text-2xl font-black text-emerald-400 mt-1">{accuracyPercentage}%</div>
+                      <div className="text-xs text-slate-500 mt-0.5">{correctAnswersCount} of {drillExercises.length} correct</div>
                     </div>
-                  )}
+                    <div className="p-4 bg-slate-800 rounded-2xl border border-slate-700">
+                      <div className="text-xs text-slate-400 font-bold uppercase">XP Earned</div>
+                      <div className="text-2xl font-black text-amber-400 mt-1">+{correctAnswersCount * 10} XP</div>
+                      <div className="text-xs text-slate-500 mt-0.5">Mastery points</div>
+                    </div>
+                  </div>
 
-                  {/* Action Button */}
-                  {!drillAnswerSubmitted ? (
+                  <div className="space-y-2.5 pt-2">
                     <button
-                      onClick={handleSubmitDrillAnswer}
-                      disabled={!selectedOption}
-                      className="w-full py-3.5 btn-3d bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-black rounded-2xl shadow-[0_3px_0_#3730a3] text-sm"
-                    >
-                      Check Answer
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleNextDrill}
+                      onClick={() => handleStartDrill(false)}
                       className="w-full py-3.5 btn-3d bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-2xl shadow-[0_3px_0_#047857] flex items-center justify-center gap-2 text-sm"
                     >
-                      <span>
-                        {currentDrillIndex + 1 < drillExercises.length ? 'Next Question' : 'Finish Practice'}
-                      </span>
-                      <ArrowRight className="w-4 h-4" />
+                      <RotateCcw className="w-4 h-4" />
+                      <span>Practice Again</span>
                     </button>
-                  )}
+
+                    <button
+                      onClick={() => setIsDrillMode(false)}
+                      className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-2xl text-sm"
+                    >
+                      Back to Rule Theory
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : currentExercise ? (
+                /* Active Drill Question View */
+                <div className="max-w-xl mx-auto space-y-5 animate-in fade-in">
+                  
+                  {/* Progress Header */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                        <Flame className="w-4 h-4 fill-amber-400" />
+                        <span>Question {currentDrillIndex + 1} of {drillExercises.length}</span>
+                      </span>
+                      <span className="text-slate-400 font-bold">
+                        Score: {correctAnswersCount} correct
+                      </span>
+                    </div>
+
+                    <div className="h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-amber-500 via-emerald-400 to-indigo-500 transition-all duration-300"
+                        style={{ width: `${drillProgressPercent}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Question Card */}
+                  <div className="bg-slate-800/90 border border-slate-700 p-6 rounded-3xl space-y-5 shadow-xl">
+                    <div className="text-base sm:text-lg font-black text-white leading-relaxed">
+                      {currentExercise.prompt}
+                    </div>
+
+                    {/* Options */}
+                    <div className="space-y-2.5">
+                      {currentExercise.options?.map((opt, idx) => {
+                        const isSelected = selectedOption === opt;
+                        const isCorrect = opt.trim().toLowerCase() === currentExercise.correct_answer.trim().toLowerCase();
+
+                        let btnStyle = 'bg-slate-900/90 border-slate-700 text-slate-200 hover:border-slate-500';
+                        if (drillAnswerSubmitted) {
+                          if (isCorrect) {
+                            btnStyle = 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold ring-2 ring-emerald-500/30';
+                          } else if (isSelected) {
+                            btnStyle = 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold ring-2 ring-rose-500/30';
+                          }
+                        } else if (isSelected) {
+                          btnStyle = 'bg-indigo-600/30 border-indigo-500 text-white font-bold ring-2 ring-indigo-500/50';
+                        }
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => handleSelectDrillOption(opt)}
+                            disabled={drillAnswerSubmitted}
+                            className={`w-full text-left p-3.5 rounded-2xl border transition flex items-center justify-between text-sm ${btnStyle}`}
+                          >
+                            <span>{opt}</span>
+                            {drillAnswerSubmitted && isCorrect && (
+                              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Explanation feedback */}
+                    {drillAnswerSubmitted && (
+                      <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 space-y-1.5 animate-in fade-in">
+                        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Grammar Breakdown:</span>
+                        </div>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          {currentExercise.explanation}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Action Button */}
+                    {!drillAnswerSubmitted ? (
+                      <button
+                        onClick={handleSubmitDrillAnswer}
+                        disabled={!selectedOption}
+                        className="w-full py-4 btn-3d bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-black rounded-2xl shadow-[0_3px_0_#3730a3] text-sm"
+                      >
+                        Check Answer
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleNextDrill}
+                        className="w-full py-4 btn-3d bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-2xl shadow-[0_3px_0_#047857] flex items-center justify-center gap-2 text-sm"
+                      >
+                        <span>
+                          {currentDrillIndex + 1 < drillExercises.length ? 'Next Question' : 'Complete Session'}
+                        </span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="text-center">
+                    <button
+                      onClick={() => setIsDrillMode(false)}
+                      className="text-xs text-slate-400 hover:text-slate-200 underline"
+                    >
+                      Exit drill and return to theory
+                    </button>
+                  </div>
+
+                </div>
+              ) : null
             ) : activeTopicDetail ? (
               /* --- Topic Detail / Theory Breakdown View --- */
               <div className="max-w-3xl mx-auto space-y-6">
@@ -414,7 +496,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                     <Layers className="w-4 h-4 text-emerald-400" />
-                    <span>Rule Explanation:</span>
+                    <span>Detailed Rule Breakdown:</span>
                   </h4>
                   <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line">
                     {activeTopicDetail.rule_explanation}
@@ -426,7 +508,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                       <Volume2 className="w-4 h-4 text-sky-400" />
-                      <span>Concrete Examples:</span>
+                      <span>Concrete Examples & Pronunciation:</span>
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {activeTopicDetail.examples.map((ex, idx) => (
@@ -461,7 +543,7 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                   <div className="p-4 bg-rose-950/40 border border-rose-500/30 rounded-2xl space-y-2">
                     <div className="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
                       <AlertTriangle className="w-4 h-4" />
-                      <span>Common Pitfalls & Mistakes:</span>
+                      <span>Common Pitfalls & Exam Traps:</span>
                     </div>
                     <ul className="space-y-1 text-xs text-slate-300">
                       {activeTopicDetail.common_pitfalls.map((pitfall, idx) => (
@@ -478,16 +560,16 @@ export const GrammarHubModal: React.FC<GrammarHubModalProps> = ({
                 <div className="pt-2 flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={() => handleStartDrill(false)}
-                    className="flex-1 py-3.5 btn-3d bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-2xl shadow-[0_3px_0_#047857] flex items-center justify-center gap-2 text-sm"
+                    className="flex-1 py-4 btn-3d bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-2xl shadow-[0_3px_0_#047857] flex items-center justify-center gap-2 text-sm"
                   >
                     <Play className="w-4 h-4 fill-white" />
-                    <span>Practice This Rule ({activeTopicDetail.exercises_count} Drills)</span>
+                    <span>Start Practice Session ({activeTopicDetail.exercises_count} Questions)</span>
                   </button>
 
                   <button
                     onClick={() => handleStartDrill(true)}
                     disabled={isGeneratingAIDrills}
-                    className="py-3.5 px-5 btn-3d bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-black rounded-2xl shadow-[0_3px_0_#b45309] flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+                    className="py-4 px-5 btn-3d bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-white font-black rounded-2xl shadow-[0_3px_0_#b45309] flex items-center justify-center gap-2 text-sm disabled:opacity-50"
                   >
                     {isGeneratingAIDrills ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

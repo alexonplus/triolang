@@ -141,21 +141,24 @@ def test_grammar_hub_endpoints():
         assert "B1" in levels
 
         # 2. Get details for Swedish V2 rule
-        v2_resp = client.get("/api/grammar/topics/sv-b1-v2-rule")
+        v2_resp = client.get("/api/grammar/topics/sv-b1-v2-inversion")
         assert v2_resp.status_code == 200
         v2_data = v2_resp.json()
         assert "V2" in v2_data["title"]
         assert len(v2_data["examples"]) >= 1
         assert len(v2_data["common_pitfalls"]) >= 1
+        assert v2_data["exercises_count"] >= 10
 
-        # 3. Get practice drills for V2 rule
-        drills_resp = client.get("/api/grammar/topics/sv-b1-v2-rule/drills")
+        # 3. Get practice drills for V2 rule (verifying 10+ exercises!)
+        drills_resp = client.get("/api/grammar/topics/sv-b1-v2-inversion/drills")
         assert drills_resp.status_code == 200
         drills = drills_resp.json()
-        assert len(drills["exercises"]) >= 1
+        assert len(drills["exercises"]) >= 10
 
-        # 4. Test English C1 inversion topic
-        c1_resp = client.get("/api/grammar/topics/en-c1-inversion-emphasis")
+        # 4. Test English C1 inversion topic (verifying 10+ exercises!)
+        c1_resp = client.get("/api/grammar/topics/en-c1-negative-inversion")
         assert c1_resp.status_code == 200
         assert c1_resp.json()["level"] == "C1"
+        assert c1_resp.json()["exercises_count"] >= 10
+
 
