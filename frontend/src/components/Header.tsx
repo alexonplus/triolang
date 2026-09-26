@@ -1,4 +1,4 @@
-import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen } from 'lucide-react';
+import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen, Clock } from 'lucide-react';
 import type { Course, UserStats } from '../types';
 import { soundEffects } from '../services/audio';
 
@@ -10,6 +10,7 @@ interface HeaderProps {
   onOpenAITutor: () => void;
   onOpenPlacementTest?: () => void;
   onOpenGrammar?: () => void;
+  onOpenTenses?: () => void;
   onRefillHearts: () => void;
 }
 
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAITutor,
   onOpenPlacementTest,
   onOpenGrammar,
+  onOpenTenses,
   onRefillHearts,
 }) => {
   const currentCourse = courses.find((c) => c.id === currentCourseId) || courses[0];
@@ -95,6 +97,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
           </div>
+
+          {onOpenTenses && (
+            <button
+              onClick={() => {
+                soundEffects.playClickSound();
+                onOpenTenses();
+              }}
+              title="Verb Tenses Lab (All 12 Tenses & Timelines)"
+              className="flex items-center gap-1.5 px-3 py-1.5 btn-3d bg-amber-600 hover:bg-amber-500 text-white font-black rounded-xl shadow-[0_3px_0_#92400e] text-sm"
+            >
+              <Clock className="w-4 h-4 text-amber-200" />
+              <span className="hidden sm:inline">Tenses</span>
+            </button>
+          )}
 
           {onOpenGrammar && (
             <button

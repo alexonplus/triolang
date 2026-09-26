@@ -218,3 +218,75 @@ class GrammarPracticeDrillsResponse(BaseModel):
 class GrammarGenerateDrillsRequest(BaseModel):
     custom_prompt: Optional[str] = None
 
+
+# ------------------------------------------------------------------------------
+# Verb Tenses Lab & AI Memory Schemas
+# ------------------------------------------------------------------------------
+class TenseExample(BaseModel):
+    swedish: str
+    english: str
+    target_highlight: Optional[str] = None
+
+
+class TenseExerciseItem(BaseModel):
+    id: int
+    type: str
+    prompt: str
+    options: Optional[List[str]] = None
+    correct_answer: str
+    explanation: Optional[str] = None
+
+
+class TenseSummary(BaseModel):
+    id: str
+    language: str
+    time_aspect: str  # past, present, future
+    title: str
+    swedish_title: str
+    level: str
+    summary: str
+    formula: str
+    signal_words: List[str] = []
+    timeline_description: str
+    mastery_percentage: int = 0
+    attempts_count: int = 0
+
+
+class TenseDetail(TenseSummary):
+    examples: List[TenseExample] = []
+    common_pitfalls: List[str] = []
+    exercises_count: int = 0
+
+
+class TenseDrillsResponse(BaseModel):
+    tense_id: str
+    tense_title: str
+    language: str
+    time_aspect: str
+    exercises: List[TenseExerciseItem] = []
+
+
+class TenseDrillSubmitRequest(BaseModel):
+    exercise_id: int
+    user_answer: str
+
+
+class TenseDrillSubmitResponse(BaseModel):
+    is_correct: bool
+    correct_answer: str
+    explanation: Optional[str] = None
+    xp_earned: int = 0
+    new_mastery_percentage: int = 0
+    ai_memory_feedback: Optional[str] = None
+
+
+class AIMemoryProfileResponse(BaseModel):
+    username: str
+    overall_accuracy: int
+    detected_strengths: List[str] = []
+    detected_weaknesses: List[str] = []
+    recommended_focus_tenses: List[str] = []
+    total_mistakes_logged: int = 0
+    ai_coaching_note: str
+
+

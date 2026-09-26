@@ -162,3 +162,58 @@ def test_grammar_hub_endpoints():
         assert c1_resp.json()["exercises_count"] >= 10
 
 
+def test_tenses_and_ai_memory_endpoints():
+    with TestClient(app) as client:
+        # 1. Verify all 12 English tenses are returned
+        resp = client.get("/api/tenses?language=en")
+        assert resp.status_code == 200
+        en_tenses = resp.json()
+        assert len(en_tenses) == 12
+        tense_ids = [t["id"] for t in en_tenses]
+        assert "en-present-simple" in tense_ids
+        assert "en-present-perfect-continuous" in tense_ids
+        assert "en-past-perfect-continuous" in tense_ids
+        assert "en-future-perfect-continuous" in tense_ids
+
+        # 2. Verify Swedish tenses
+        sv_resp = client.get("/api/tenses?language=sv")
+        assert sv_resp.status_code == 200
+        assert len(sv_resp.json()) >= 5
+
+        # 3. Get drills for Past Perfect Continuous (10+ exercises)
+        drills_resp = client.get("/api/tenses/en-past-perfect-continuous/drills")
+        assert drills_resp.status_code == 200
+        drills = drills_resp.json()
+        assert len(drills["exercises"]) >= 10
+
+        first_ex = drills["exercises"][0]
+
+        # 4. Submit correct drill answer and check SQLite mastery update
+        submit_resp = client.post(
+            "/api/tenses/en-past-perfect-continuous/submit",
+            json={"exercise_id": first_ex["id"], "user_answer": first_ex["correct_answer"]},
+        )
+        assert submit_resp.status_code == 200
+        data = submit_resp.json()
+        assert data["is_correct"] is True
+        assert data["new_mastery_percentage"] > 0
+
+        # 5. Submit incorrect answer and verify AI Memory logging
+        bad_submit = client.post(
+            "/api/tenses/en-past-perfect-continuous/submit",
+            json={"exercise_id": first_ex["id"], "user_answer": "wrong-verb-form-test"},
+        )
+        assert bad_submit.status_code == 200
+        bad_data = bad_submit.json()
+        assert bad_data["is_correct"] is False
+        assert "AI Memory logged" in bad_data["ai_memory_feedback"]
+
+        # 6. Query AI Memory Profile
+        profile_resp = client.get("/api/ai/memory-profile")
+        assert profile_resp.status_code == 200
+        profile = profile_resp.json()
+        assert profile["total_mistakes_logged"] >= 1
+        assert len(profile["ai_coaching_note"]) > 0
+
+
+

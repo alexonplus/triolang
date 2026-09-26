@@ -13,6 +13,11 @@ import type {
   GrammarTopicSummary,
   GrammarTopicDetail,
   GrammarPracticeDrillsResponse,
+  TenseSummary,
+  TenseDetail,
+  TenseDrillsResponse,
+  TenseDrillSubmitResponse,
+  AIMemoryProfileResponse,
 } from '../types';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
@@ -127,4 +132,27 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ custom_prompt: customPrompt }),
     }),
+
+  getTenses: (language?: string, timeAspect?: string) => {
+    const params = new URLSearchParams();
+    if (language) params.append('language', language);
+    if (timeAspect && timeAspect !== 'all') params.append('time_aspect', timeAspect);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return fetchJson<TenseSummary[]>(`/tenses${query}`);
+  },
+
+  getTenseDetail: (tenseId: string) =>
+    fetchJson<TenseDetail>(`/tenses/${encodeURIComponent(tenseId)}`),
+
+  getTenseDrills: (tenseId: string) =>
+    fetchJson<TenseDrillsResponse>(`/tenses/${encodeURIComponent(tenseId)}/drills`),
+
+  submitTenseDrill: (tenseId: string, exerciseId: number, userAnswer: string) =>
+    fetchJson<TenseDrillSubmitResponse>(`/tenses/${encodeURIComponent(tenseId)}/submit`, {
+      method: 'POST',
+      body: JSON.stringify({ exercise_id: exerciseId, user_answer: userAnswer }),
+    }),
+
+  getAIMemoryProfile: () =>
+    fetchJson<AIMemoryProfileResponse>('/ai/memory-profile'),
 };

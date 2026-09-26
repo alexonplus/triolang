@@ -144,6 +144,62 @@ class UserLessonProgress(Base):
     user: Mapped["User"] = relationship("User", back_populates="progress_records")
 
 
+class UserTenseProgress(Base):
+    """
+    Tracks learner mastery, attempts, and accuracy per grammatical tense.
+    """
+    __tablename__ = "user_tense_progress"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
+    tense_id: Mapped[str] = mapped_column(String(100), index=True)
+    language: Mapped[str] = mapped_column(String(10), index=True)
+    attempts_count: Mapped[int] = mapped_column(Integer, default=0)
+    correct_count: Mapped[int] = mapped_column(Integer, default=0)
+    mastery_percentage: Mapped[int] = mapped_column(Integer, default=0)
+    last_practiced_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class UserMistakeLog(Base):
+    """
+    Persistent log of learner mistakes for AI diagnostic memory.
+    """
+    __tablename__ = "user_mistake_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
+    topic_or_tense_id: Mapped[str] = mapped_column(String(100), index=True)
+    language: Mapped[str] = mapped_column(String(10), index=True)
+    prompt_text: Mapped[str] = mapped_column(Text)
+    user_answer: Mapped[str] = mapped_column(Text)
+    correct_answer: Mapped[str] = mapped_column(Text)
+    explanation: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class UserAIMemoryProfile(Base):
+    """
+    Persistent stateful AI memory summarizing learner strengths and weaknesses.
+    """
+    __tablename__ = "user_ai_memory_profiles"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), unique=True, index=True)
+    detected_strengths_json: Mapped[str] = mapped_column(Text, default="[]")
+    detected_weaknesses_json: Mapped[str] = mapped_column(Text, default="[]")
+    recommended_focus_json: Mapped[str] = mapped_column(Text, default="[]")
+    overall_tense_accuracy: Mapped[int] = mapped_column(Integer, default=100)
+    ai_tutor_summary_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+
 def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:

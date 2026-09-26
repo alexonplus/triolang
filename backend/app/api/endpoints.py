@@ -31,12 +31,20 @@ from app.models.schemas import (
     GrammarTopicDetail,
     GrammarPracticeDrillsResponse,
     GrammarGenerateDrillsRequest,
+    TenseSummary,
+    TenseDetail,
+    TenseDrillsResponse,
+    TenseDrillSubmitRequest,
+    TenseDrillSubmitResponse,
+    AIMemoryProfileResponse,
 )
 from app.services.game_engine import evaluate_exercise_answer, award_lesson_rewards
 from app.services.ai_tutor import ask_ai_tutor
 from app.services.lesson_generator import generate_and_save_ai_lesson
 from app.services.placement_service import get_placement_questions, evaluate_and_generate_personalized_path
 from app.services.grammar_service import GrammarService
+from app.services.tenses_service import TensesService
+from app.services.ai_memory_service import AIMemoryService
 from app.core.config import settings
 
 router = APIRouter()
@@ -344,4 +352,62 @@ def generate_grammar_ai_drills(topic_id: str, payload: GrammarGenerateDrillsRequ
     if not drills:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Grammar topic '{topic_id}' not found.")
     return drills
+
+
+# ------------------------------------------------------------------------------
+# 7. Verb Tenses Lab & Persistent AI Memory Endpoints
+# ------------------------------------------------------------------------------
+@router.get("/tenses", response_model=List[TenseSummary], summary="List verb tenses with language and aspect filters")
+def list_tenses(language: str = None, time_aspect: str = None, db: Session = Depends(get_db)):
+    user = db.query(User).first()
+    user_id = user.id if user else 1
+    return TensesService.get_tenses(db=db, user_id=user_id, language=language, time_aspect=time_aspect)
+
+
+@router.get("/tenses/{tense_id}", response_model=TenseDetail, summary="Get full tense rules, formulas, examples and user mastery")
+def get_tense_detail(tense_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).first()
+    user_id = user.id if user else 1
+    detail = TensesService.get_tense_detail(db=db, user_id=user_id, tense_id=tense_id)
+    if not detail:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Tense '{tense_id}' not found.")
+    return detail
+
+
+@router.get("/tenses/{tense_id}/drills", response_model=TenseDrillsResponse, summary="Get interactive drill exercises for tense")
+def get_tense_drills(tense_id: str):
+    drills = TensesService.get_drills(tense_id)
+    if not drills:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Tense '{tense_id}' not found.")
+    return drills
+
+
+@router.post("/tenses/{tense_id}/submit", response_model=TenseDrillSubmitResponse, summary="Submit tense drill answer and update AI memory")
+def submit_tense_drill(
+    tense_id: str,
+    payload: TenseDrillSubmitRequest,
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User profile not found.")
+    try:
+        return TensesService.submit_drill_answer(
+            db=db,
+            user_id=user.id,
+            tense_id=tense_id,
+            exercise_id=payload.exercise_id,
+            user_answer=payload.user_answer,
+        )
+    except ValueError as err:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(err))
+
+
+@router.get("/ai/memory-profile", response_model=AIMemoryProfileResponse, summary="Get persistent AI learner memory profile and recommendations")
+def get_ai_memory_profile(db: Session = Depends(get_db)):
+    user = db.query(User).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User profile not found.")
+    return AIMemoryService.recalculate_memory_profile(db=db, user_id=user.id)
+
 

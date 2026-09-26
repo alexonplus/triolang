@@ -158,4 +158,68 @@ export interface GrammarPracticeDrillsResponse {
   exercises: GrammarExerciseItem[];
 }
 
+export interface TenseExample {
+  swedish: string;
+  english: string;
+  target_highlight?: string;
+}
+
+export interface TenseExerciseItem {
+  id: number;
+  type: string;
+  prompt: string;
+  options?: string[];
+  correct_answer: string;
+  explanation?: string;
+}
+
+export interface TenseSummary {
+  id: string;
+  language: string;
+  time_aspect: string; // 'past' | 'present' | 'future'
+  title: string;
+  swedish_title: string;
+  level: string;
+  summary: string;
+  formula: string;
+  signal_words: string[];
+  timeline_description: string;
+  mastery_percentage: number;
+  attempts_count: number;
+}
+
+export interface TenseDetail extends TenseSummary {
+  examples: TenseExample[];
+  common_pitfalls: string[];
+  exercises_count: number;
+}
+
+export interface TenseDrillsResponse {
+  tense_id: string;
+  tense_title: string;
+  language: string;
+  time_aspect: string;
+  exercises: TenseExerciseItem[];
+}
+
+export interface TenseDrillSubmitResponse {
+  is_correct: boolean;
+  correct_answer: string;
+  explanation?: string;
+  xp_earned: number;
+  new_mastery_percentage: number;
+  ai_memory_feedback?: string;
+}
+
+export interface AIMemoryProfileResponse {
+  username: string;
+  overall_accuracy: number;
+  detected_strengths: string[];
+  detected_weaknesses: string[];
+  recommended_focus_tenses: string[];
+  total_mistakes_logged: number;
+  ai_coaching_note: string;
+}
+
+
 
