@@ -1,5 +1,4 @@
-import React from 'react';
-import { Flame, Heart, Gem, Bot, RefreshCw, Target } from 'lucide-react';
+import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen } from 'lucide-react';
 import type { Course, UserStats } from '../types';
 import { soundEffects } from '../services/audio';
 
@@ -10,6 +9,7 @@ interface HeaderProps {
   onSelectCourse: (courseId: string) => void;
   onOpenAITutor: () => void;
   onOpenPlacementTest?: () => void;
+  onOpenGrammar?: () => void;
   onRefillHearts: () => void;
 }
 
@@ -20,6 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectCourse,
   onOpenAITutor,
   onOpenPlacementTest,
+  onOpenGrammar,
   onRefillHearts,
 }) => {
   const currentCourse = courses.find((c) => c.id === currentCourseId) || courses[0];
@@ -94,6 +95,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
           </div>
+
+          {onOpenGrammar && (
+            <button
+              onClick={() => {
+                soundEffects.playClickSound();
+                onOpenGrammar();
+              }}
+              title="Grammar Hub (CEFR Rules & Drills)"
+              className="flex items-center gap-1.5 px-3 py-1.5 btn-3d bg-sky-600 hover:bg-sky-500 text-white font-black rounded-xl shadow-[0_3px_0_#0369a1] text-sm"
+            >
+              <BookOpen className="w-4 h-4 text-sky-200" />
+              <span className="hidden sm:inline">Grammar</span>
+            </button>
+          )}
 
           {onOpenPlacementTest && (
             <button

@@ -171,3 +171,50 @@ class PlacementEvaluationResponse(BaseModel):
     weaknesses: List[str]
     units_generated_count: int
     message: str
+
+
+# ------------------------------------------------------------------------------
+# Grammar Hub & Drill Schemas
+# ------------------------------------------------------------------------------
+class GrammarExample(BaseModel):
+    swedish: str
+    english: str
+    target_highlight: Optional[str] = None
+
+
+class GrammarExerciseItem(BaseModel):
+    id: int
+    type: str
+    prompt: str
+    options: Optional[List[str]] = None
+    correct_answer: str
+    explanation: Optional[str] = None
+
+
+class GrammarTopicSummary(BaseModel):
+    id: str
+    language: str
+    level: str  # A1, A2, B1, B2, C1
+    title: str
+    swedish_title: str
+    summary: str
+    formula: str
+
+
+class GrammarTopicDetail(GrammarTopicSummary):
+    rule_explanation: str
+    examples: List[GrammarExample] = []
+    common_pitfalls: List[str] = []
+    exercises_count: int = 0
+
+
+class GrammarPracticeDrillsResponse(BaseModel):
+    topic_id: str
+    topic_title: str
+    level: str
+    exercises: List[GrammarExerciseItem] = []
+
+
+class GrammarGenerateDrillsRequest(BaseModel):
+    custom_prompt: Optional[str] = None
+

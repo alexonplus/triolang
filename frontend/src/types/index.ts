@@ -119,3 +119,43 @@ export interface PlacementEvaluationResponse {
   units_generated_count: number;
 }
 
+export interface GrammarExample {
+  swedish: string;
+  english: string;
+  target_highlight?: string;
+}
+
+export interface GrammarExerciseItem {
+  id: number;
+  type: string;
+  prompt: string;
+  options?: string[];
+  correct_answer: string;
+  explanation?: string;
+}
+
+export interface GrammarTopicSummary {
+  id: string;
+  language: string;
+  level: string;
+  title: string;
+  swedish_title: string;
+  summary: string;
+  formula: string;
+}
+
+export interface GrammarTopicDetail extends GrammarTopicSummary {
+  rule_explanation: string;
+  examples: GrammarExample[];
+  common_pitfalls: string[];
+  exercises_count: number;
+}
+
+export interface GrammarPracticeDrillsResponse {
+  topic_id: string;
+  topic_title: string;
+  level: string;
+  exercises: GrammarExerciseItem[];
+}
+
+

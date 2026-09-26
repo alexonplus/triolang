@@ -10,6 +10,9 @@ import type {
   PlacementQuestionItem,
   PlacementDialogueTurn,
   PlacementEvaluationResponse,
+  GrammarTopicSummary,
+  GrammarTopicDetail,
+  GrammarPracticeDrillsResponse,
 } from '../types';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
@@ -103,5 +106,25 @@ export const api = {
         dialogue,
         course_id: courseId,
       }),
+    }),
+
+  getGrammarTopics: (language?: string, level?: string) => {
+    const params = new URLSearchParams();
+    if (language) params.append('language', language);
+    if (level) params.append('level', level);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return fetchJson<GrammarTopicSummary[]>(`/grammar/topics${query}`);
+  },
+
+  getGrammarTopicDetail: (topicId: string) =>
+    fetchJson<GrammarTopicDetail>(`/grammar/topics/${encodeURIComponent(topicId)}`),
+
+  getGrammarPracticeDrills: (topicId: string) =>
+    fetchJson<GrammarPracticeDrillsResponse>(`/grammar/topics/${encodeURIComponent(topicId)}/drills`),
+
+  generateGrammarAIDrills: (topicId: string, customPrompt?: string) =>
+    fetchJson<GrammarPracticeDrillsResponse>(`/grammar/topics/${encodeURIComponent(topicId)}/generate-drills`, {
+      method: 'POST',
+      body: JSON.stringify({ custom_prompt: customPrompt }),
     }),
 };

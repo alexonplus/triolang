@@ -8,6 +8,7 @@ import { LessonCompleteModal } from './components/LessonCompleteModal';
 import { AITutorModal } from './components/AITutorModal';
 import { GenerateLessonModal } from './components/GenerateLessonModal';
 import { PlacementTestModal } from './components/PlacementTestModal';
+import { GrammarHubModal } from './components/GrammarHubModal';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -21,6 +22,7 @@ export const App: React.FC = () => {
   const [isAITutorOpen, setIsAITutorOpen] = useState(false);
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
   const [isPlacementModalOpen, setIsPlacementModalOpen] = useState(false);
+  const [isGrammarModalOpen, setIsGrammarModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -159,6 +161,7 @@ export const App: React.FC = () => {
         onSelectCourse={handleSelectCourse}
         onOpenAITutor={() => setIsAITutorOpen(true)}
         onOpenPlacementTest={() => setIsPlacementModalOpen(true)}
+        onOpenGrammar={() => setIsGrammarModalOpen(true)}
         onRefillHearts={handleRefillHearts}
       />
 
@@ -174,6 +177,13 @@ export const App: React.FC = () => {
           onOpenGenerateModal={() => setIsGenerateModalOpen(true)}
         />
       </main>
+
+      {isGrammarModalOpen && (
+        <GrammarHubModal
+          initialLanguage={activeCourse?.target_language === 'en' ? 'en' : 'sv'}
+          onClose={() => setIsGrammarModalOpen(false)}
+        />
+      )}
 
       {isPlacementModalOpen && (
         <PlacementTestModal

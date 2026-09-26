@@ -127,3 +127,35 @@ def test_diagnostic_placement_endpoint():
         data = eval_resp.json()
         assert "cefr_level" in data
         assert data["units_generated_count"] >= 1
+
+
+def test_grammar_hub_endpoints():
+    with TestClient(app) as client:
+        # 1. List all Swedish topics
+        resp = client.get("/api/grammar/topics?language=sv")
+        assert resp.status_code == 200
+        topics = resp.json()
+        assert len(topics) >= 5
+        levels = {t["level"] for t in topics}
+        assert "A1" in levels
+        assert "B1" in levels
+
+        # 2. Get details for Swedish V2 rule
+        v2_resp = client.get("/api/grammar/topics/sv-b1-v2-rule")
+        assert v2_resp.status_code == 200
+        v2_data = v2_resp.json()
+        assert "V2" in v2_data["title"]
+        assert len(v2_data["examples"]) >= 1
+        assert len(v2_data["common_pitfalls"]) >= 1
+
+        # 3. Get practice drills for V2 rule
+        drills_resp = client.get("/api/grammar/topics/sv-b1-v2-rule/drills")
+        assert drills_resp.status_code == 200
+        drills = drills_resp.json()
+        assert len(drills["exercises"]) >= 1
+
+        # 4. Test English C1 inversion topic
+        c1_resp = client.get("/api/grammar/topics/en-c1-inversion-emphasis")
+        assert c1_resp.status_code == 200
+        assert c1_resp.json()["level"] == "C1"
+

@@ -27,11 +27,16 @@ from app.models.schemas import (
     PlacementQuestionItem,
     PlacementEvaluateRequest,
     PlacementEvaluationResponse,
+    GrammarTopicSummary,
+    GrammarTopicDetail,
+    GrammarPracticeDrillsResponse,
+    GrammarGenerateDrillsRequest,
 )
 from app.services.game_engine import evaluate_exercise_answer, award_lesson_rewards
 from app.services.ai_tutor import ask_ai_tutor
 from app.services.lesson_generator import generate_and_save_ai_lesson
 from app.services.placement_service import get_placement_questions, evaluate_and_generate_personalized_path
+from app.services.grammar_service import GrammarService
 from app.core.config import settings
 
 router = APIRouter()
@@ -306,3 +311,37 @@ async def evaluate_diagnostic_endpoint(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Diagnostic evaluation failed: {str(err)}",
         )
+
+
+# ------------------------------------------------------------------------------
+# 6. Grammar Hub & Interactive Drill Endpoints
+# ------------------------------------------------------------------------------
+@router.get("/grammar/topics", response_model=List[GrammarTopicSummary], summary="List grammar topics with optional language and level filters")
+def list_grammar_topics(language: str = None, level: str = None):
+    return GrammarService.get_topics(language=language, level=level)
+
+
+@router.get("/grammar/topics/{topic_id}", response_model=GrammarTopicDetail, summary="Get full grammar topic explanation & examples")
+def get_grammar_topic_detail(topic_id: str):
+    detail = GrammarService.get_topic_detail(topic_id)
+    if not detail:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Grammar topic '{topic_id}' not found.")
+    return detail
+
+
+@router.get("/grammar/topics/{topic_id}/drills", response_model=GrammarPracticeDrillsResponse, summary="Get built-in practice drill exercises for topic")
+def get_grammar_practice_drills(topic_id: str):
+    drills = GrammarService.get_practice_drills(topic_id)
+    if not drills:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Grammar topic '{topic_id}' not found.")
+    return drills
+
+
+@router.post("/grammar/topics/{topic_id}/generate-drills", response_model=GrammarPracticeDrillsResponse, summary="Generate dynamic AI drill exercises for grammar topic")
+def generate_grammar_ai_drills(topic_id: str, payload: GrammarGenerateDrillsRequest = None):
+    custom_focus = payload.custom_prompt if payload else None
+    drills = GrammarService.generate_ai_drills(topic_id, custom_focus=custom_focus)
+    if not drills:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Grammar topic '{topic_id}' not found.")
+    return drills
+
