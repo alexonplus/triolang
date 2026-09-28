@@ -216,4 +216,49 @@ def test_tenses_and_ai_memory_endpoints():
         assert len(profile["ai_coaching_note"]) > 0
 
 
+def test_dialogue_simulator_and_grammar_correction():
+    with TestClient(app) as client:
+        # 1. List Swedish and English scenarios
+        scenarios_resp = client.get("/api/dialogues/scenarios?language=sv")
+        assert scenarios_resp.status_code == 200
+        scenarios = scenarios_resp.json()
+        assert len(scenarios) >= 4
+        scenario_ids = [s["id"] for s in scenarios]
+        assert "sv-fika-cafe" in scenario_ids
+
+        # 2. Initiate scenario (computer speaks first)
+        start_resp = client.post(
+            "/api/dialogues/start",
+            json={"scenario_id": "sv-fika-cafe", "language": "sv"},
+        )
+        assert start_resp.status_code == 200
+        start_data = start_resp.json()
+        assert start_data["persona_name"] == "Linnéa (Barista)"
+        assert start_data["initial_message"]["sender"] == "AI"
+        assert len(start_data["initial_message"]["text"]) > 0
+        assert len(start_data["suggested_chips"]) >= 3
+
+        # 3. User responds with an intentional V2 mistake ("Igår jag åt...")
+        turn_resp = client.post(
+            "/api/dialogues/turn",
+            json={
+                "scenario_id": "sv-fika-cafe",
+                "language": "sv",
+                "user_message": "Igår jag drack kaffe och idag vill jag ha en kanelbulle.",
+                "history": [start_data["initial_message"]],
+            },
+        )
+        assert turn_resp.status_code == 200
+        turn_data = turn_resp.json()
+        assert turn_data["ai_reply"]["sender"] == "AI"
+        assert len(turn_data["ai_reply"]["text"]) > 0
+
+        # 4. Verify grammar correction detected V2 inversion error
+        assert turn_data["correction_feedback"] is not None
+        assert turn_data["correction_feedback"]["has_errors"] is True
+        assert "V2" in turn_data["correction_feedback"]["grammar_rule_explanation"] or "V2" in turn_data["correction_feedback"]["highlighted_issues"][0]
+        assert "Igår drack jag" in turn_data["correction_feedback"]["corrected_text"]
+
+
+
 

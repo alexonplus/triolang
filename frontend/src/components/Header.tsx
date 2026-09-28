@@ -1,4 +1,4 @@
-import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen, Clock } from 'lucide-react';
+import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen, Clock, MessageSquare } from 'lucide-react';
 import type { Course, UserStats } from '../types';
 import { soundEffects } from '../services/audio';
 
@@ -11,6 +11,7 @@ interface HeaderProps {
   onOpenPlacementTest?: () => void;
   onOpenGrammar?: () => void;
   onOpenTenses?: () => void;
+  onOpenDialogue?: () => void;
   onRefillHearts: () => void;
 }
 
@@ -23,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenPlacementTest,
   onOpenGrammar,
   onOpenTenses,
+  onOpenDialogue,
   onRefillHearts,
 }) => {
   const currentCourse = courses.find((c) => c.id === currentCourseId) || courses[0];
@@ -97,6 +99,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
           </div>
+
+          {onOpenDialogue && (
+            <button
+              onClick={() => {
+                soundEffects.playClickSound();
+                onOpenDialogue();
+              }}
+              title="Conversational AI Dialogue & Roleplays"
+              className="flex items-center gap-1.5 px-3 py-1.5 btn-3d bg-purple-600 hover:bg-purple-500 text-white font-black rounded-xl shadow-[0_3px_0_#581c87] text-sm"
+            >
+              <MessageSquare className="w-4 h-4 text-purple-200" />
+              <span className="hidden sm:inline">Dialogue</span>
+            </button>
+          )}
 
           {onOpenTenses && (
             <button

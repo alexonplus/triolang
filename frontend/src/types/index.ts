@@ -221,5 +221,52 @@ export interface AIMemoryProfileResponse {
   ai_coaching_note: string;
 }
 
+export interface DialogueScenarioSummary {
+  id: string;
+  language: string;
+  title: string;
+  swedish_title: string;
+  description: string;
+  persona: string;
+  avatar: string;
+  level: string;
+  tags: string[];
+  initial_prompt: string;
+  initial_prompt_translation?: string;
+  suggested_starter_chips: string[];
+}
+
+export interface GrammarCorrectionFeedback {
+  has_errors: boolean;
+  original_text: string;
+  corrected_text?: string;
+  grammar_rule_explanation?: string;
+  improved_native_alternative?: string;
+  highlighted_issues: string[];
+}
+
+export interface DialogueTurnMessage {
+  sender: 'AI' | 'User';
+  text: string;
+  translation?: string;
+  correction_feedback?: GrammarCorrectionFeedback;
+  timestamp?: string;
+}
+
+export interface DialogueStartResponse {
+  scenario_id: string;
+  scenario_title: string;
+  persona: string;
+  language: string;
+  initial_message: DialogueTurnMessage;
+  suggested_starter_chips: string[];
+}
+
+export interface DialogueTurnResponse {
+  ai_reply: DialogueTurnMessage;
+  correction_feedback?: GrammarCorrectionFeedback;
+  suggested_next_chips: string[];
+}
+
 
 

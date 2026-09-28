@@ -290,3 +290,66 @@ class AIMemoryProfileResponse(BaseModel):
     ai_coaching_note: str
 
 
+# ------------------------------------------------------------------------------
+# Conversational Dialogue & Real-Time Correction Schemas
+# ------------------------------------------------------------------------------
+class DialogueScenarioSummary(BaseModel):
+    id: str
+    language: str
+    title: str
+    swedish_title: str
+    level: str
+    category: str
+    persona_name: str
+    avatar_emoji: str
+    scenario_context: str
+    suggested_chips: List[str] = []
+    target_grammar: str
+
+
+class GrammarCorrectionFeedback(BaseModel):
+    has_errors: bool
+    original_text: str
+    corrected_text: Optional[str] = None
+    grammar_rule_explanation: Optional[str] = None
+    improved_native_alternative: Optional[str] = None
+    highlighted_issues: List[str] = []
+
+
+class DialogueTurnMessage(BaseModel):
+    sender: str  # 'AI' | 'User'
+    text: str
+    translation: Optional[str] = None
+    correction_feedback: Optional[GrammarCorrectionFeedback] = None
+
+
+class DialogueStartRequest(BaseModel):
+    scenario_id: str
+    custom_topic: Optional[str] = None
+    language: str = "sv"
+
+
+class DialogueStartResponse(BaseModel):
+    scenario_id: str
+    persona_name: str
+    avatar_emoji: str
+    scenario_title: str
+    initial_message: DialogueTurnMessage
+    suggested_chips: List[str] = []
+
+
+class DialogueTurnRequest(BaseModel):
+    scenario_id: str
+    custom_topic: Optional[str] = None
+    language: str = "sv"
+    user_message: str
+    history: List[DialogueTurnMessage] = []
+
+
+class DialogueTurnResponse(BaseModel):
+    ai_reply: DialogueTurnMessage
+    correction_feedback: Optional[GrammarCorrectionFeedback] = None
+    suggested_next_chips: List[str] = []
+
+
+

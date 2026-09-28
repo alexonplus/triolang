@@ -37,6 +37,11 @@ from app.models.schemas import (
     TenseDrillSubmitRequest,
     TenseDrillSubmitResponse,
     AIMemoryProfileResponse,
+    DialogueScenarioSummary,
+    DialogueStartRequest,
+    DialogueStartResponse,
+    DialogueTurnRequest,
+    DialogueTurnResponse,
 )
 from app.services.game_engine import evaluate_exercise_answer, award_lesson_rewards
 from app.services.ai_tutor import ask_ai_tutor
@@ -45,6 +50,7 @@ from app.services.placement_service import get_placement_questions, evaluate_and
 from app.services.grammar_service import GrammarService
 from app.services.tenses_service import TensesService
 from app.services.ai_memory_service import AIMemoryService
+from app.services.dialogue_service import DialogueService
 from app.core.config import settings
 
 router = APIRouter()
@@ -409,5 +415,41 @@ def get_ai_memory_profile(db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User profile not found.")
     return AIMemoryService.recalculate_memory_profile(db=db, user_id=user.id)
+
+
+# ------------------------------------------------------------------------------
+# 8. Conversational Dialogue & Real-Time Grammar Correction Endpoints
+# ------------------------------------------------------------------------------
+@router.get("/dialogues/scenarios", response_model=List[DialogueScenarioSummary], summary="List roleplay dialogue scenarios by language")
+def list_dialogue_scenarios(language: str = None):
+    return DialogueService.get_scenarios(language=language)
+
+
+@router.post("/dialogues/start", response_model=DialogueStartResponse, summary="Initiate a dialogue scenario (computer speaks first)")
+def start_dialogue_scenario(payload: DialogueStartRequest):
+    return DialogueService.start_dialogue(
+        scenario_id=payload.scenario_id,
+        custom_topic=payload.custom_topic,
+        language=payload.language,
+    )
+
+
+@router.post("/dialogues/turn", response_model=DialogueTurnResponse, summary="Send user message, receive in-character reply and real-time grammar corrections")
+async def send_dialogue_turn(
+    payload: DialogueTurnRequest,
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).first()
+    user_id = user.id if user else 1
+    return await DialogueService.process_turn(
+        db=db,
+        user_id=user_id,
+        scenario_id=payload.scenario_id,
+        user_message=payload.user_message,
+        language=payload.language,
+        history=payload.history,
+        custom_topic=payload.custom_topic,
+    )
+
 
 

@@ -10,6 +10,7 @@ import { GenerateLessonModal } from './components/GenerateLessonModal';
 import { PlacementTestModal } from './components/PlacementTestModal';
 import { GrammarHubModal } from './components/GrammarHubModal';
 import { TensesMasteryModal } from './components/TensesMasteryModal';
+import { ConversationModal } from './components/ConversationModal';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -25,6 +26,7 @@ export const App: React.FC = () => {
   const [isPlacementModalOpen, setIsPlacementModalOpen] = useState(false);
   const [isGrammarModalOpen, setIsGrammarModalOpen] = useState(false);
   const [isTensesModalOpen, setIsTensesModalOpen] = useState(false);
+  const [isDialogueModalOpen, setIsDialogueModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -165,6 +167,7 @@ export const App: React.FC = () => {
         onOpenPlacementTest={() => setIsPlacementModalOpen(true)}
         onOpenGrammar={() => setIsGrammarModalOpen(true)}
         onOpenTenses={() => setIsTensesModalOpen(true)}
+        onOpenDialogue={() => setIsDialogueModalOpen(true)}
         onRefillHearts={handleRefillHearts}
       />
 
@@ -180,6 +183,14 @@ export const App: React.FC = () => {
           onOpenGenerateModal={() => setIsGenerateModalOpen(true)}
         />
       </main>
+
+      {isDialogueModalOpen && (
+        <ConversationModal
+          isOpen={isDialogueModalOpen}
+          initialLanguage={activeCourse?.target_language === 'sv' ? 'sv' : 'en'}
+          onClose={() => setIsDialogueModalOpen(false)}
+        />
+      )}
 
       {isTensesModalOpen && (
         <TensesMasteryModal

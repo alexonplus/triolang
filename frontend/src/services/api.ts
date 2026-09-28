@@ -18,6 +18,10 @@ import type {
   TenseDrillsResponse,
   TenseDrillSubmitResponse,
   AIMemoryProfileResponse,
+  DialogueScenarioSummary,
+  DialogueTurnMessage,
+  DialogueStartResponse,
+  DialogueTurnResponse,
 } from '../types';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
@@ -155,4 +159,32 @@ export const api = {
 
   getAIMemoryProfile: () =>
     fetchJson<AIMemoryProfileResponse>('/ai/memory-profile'),
+
+  getDialogueScenarios: (language?: string) => {
+    const params = new URLSearchParams();
+    if (language) params.append('language', language);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return fetchJson<DialogueScenarioSummary[]>(`/dialogues/scenarios${query}`);
+  },
+
+  startDialogueScenario: (scenarioId: string, language: string = 'sv', customTopic?: string) =>
+    fetchJson<DialogueStartResponse>('/dialogues/start', {
+      method: 'POST',
+      body: JSON.stringify({
+        scenario_id: scenarioId,
+        language,
+        custom_scenario_topic: customTopic,
+      }),
+    }),
+
+  sendDialogueTurn: (scenarioId: string, language: string, userMessage: string, history: DialogueTurnMessage[]) =>
+    fetchJson<DialogueTurnResponse>('/dialogues/turn', {
+      method: 'POST',
+      body: JSON.stringify({
+        scenario_id: scenarioId,
+        language,
+        user_message: userMessage,
+        conversation_history: history,
+      }),
+    }),
 };
