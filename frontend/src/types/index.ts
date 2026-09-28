@@ -226,14 +226,13 @@ export interface DialogueScenarioSummary {
   language: string;
   title: string;
   swedish_title: string;
-  description: string;
-  persona: string;
-  avatar: string;
   level: string;
-  tags: string[];
-  initial_prompt: string;
-  initial_prompt_translation?: string;
-  suggested_starter_chips: string[];
+  category: string;
+  persona_name: string;
+  avatar_emoji: string;
+  scenario_context: string;
+  suggested_chips: string[];
+  target_grammar: string;
 }
 
 export interface GrammarCorrectionFeedback {
@@ -255,11 +254,11 @@ export interface DialogueTurnMessage {
 
 export interface DialogueStartResponse {
   scenario_id: string;
+  persona_name: string;
+  avatar_emoji: string;
   scenario_title: string;
-  persona: string;
-  language: string;
   initial_message: DialogueTurnMessage;
-  suggested_starter_chips: string[];
+  suggested_chips: string[];
 }
 
 export interface DialogueTurnResponse {

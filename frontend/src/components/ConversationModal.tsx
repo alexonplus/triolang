@@ -92,7 +92,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
       };
 
       setMessages([initialTurn]);
-      setSuggestedChips(response.suggested_starter_chips || []);
+      setSuggestedChips(response.suggested_chips || []);
 
       // Speak opening AI phrase
       if (initialTurn.text) {
@@ -117,13 +117,13 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
         language: selectedLanguage,
         title: customTopic.trim(),
         swedish_title: customTopic.trim(),
-        description: `Custom interactive roleplay on: "${customTopic.trim()}"`,
-        persona: 'Conversation Partner',
-        avatar: '🎭',
         level: 'A2-B2',
-        tags: ['Custom', 'Free Conversation'],
-        initial_prompt: selectedLanguage === 'sv' ? `Hej! Låt oss prata om: ${customTopic}. Vad tycker du?` : `Hello! Let's talk about: ${customTopic}. What do you think?`,
-        suggested_starter_chips: selectedLanguage === 'sv' ? ['Det låter spännande!', 'Berätta mer.', 'Vad tycker du själv?'] : ['Sounds exciting!', 'Tell me more.', 'What do you think?'],
+        category: 'Custom Topic',
+        persona_name: 'Conversation Partner',
+        avatar_emoji: '🎭',
+        scenario_context: `Custom interactive roleplay on: "${customTopic.trim()}"`,
+        suggested_chips: selectedLanguage === 'sv' ? ['Det låter spännande!', 'Berätta mer.', 'Vad tycker du själv?'] : ['Sounds exciting!', 'Tell me more.', 'What do you think?'],
+        target_grammar: 'Free roleplay and natural interaction',
       };
 
       setActiveScenario(customScenarioObj);
@@ -137,7 +137,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
       };
 
       setMessages([initialTurn]);
-      setSuggestedChips(response.suggested_starter_chips || []);
+      setSuggestedChips(response.suggested_chips || []);
 
       if (initialTurn.text) {
         speakText(initialTurn.text, selectedLanguage);
@@ -234,7 +234,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
             ) : null}
 
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/20">
-              {activeScenario ? activeScenario.avatar : '🎭'}
+              {activeScenario ? activeScenario.avatar_emoji : '🎭'}
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -243,7 +243,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                 </h2>
                 {activeScenario && (
                   <span className="px-2 py-0.5 text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full">
-                    {activeScenario.persona}
+                    {activeScenario.persona_name}
                   </span>
                 )}
               </div>
@@ -372,7 +372,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div className="flex items-center gap-3">
                             <span className="text-3xl p-2 bg-slate-900/80 rounded-xl border border-slate-700 group-hover:scale-110 transition-transform">
-                              {scenario.avatar}
+                              {scenario.avatar_emoji}
                             </span>
                             <div>
                               <h4 className="font-bold text-white text-base group-hover:text-emerald-300 transition">
@@ -391,25 +391,20 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                         </div>
 
                         <p className="text-xs text-slate-300 line-clamp-2 my-2.5">
-                          {scenario.description}
+                          {scenario.scenario_context}
                         </p>
 
                         <div className="flex items-center gap-2 text-xs text-slate-400 my-2">
                           <Bot className="w-3.5 h-3.5 text-indigo-400" />
-                          <span>Persona: <strong className="text-slate-200">{scenario.persona}</strong></span>
+                          <span>Persona: <strong className="text-slate-200">{scenario.persona_name}</strong></span>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-3 border-t border-slate-700/50 mt-2">
                         <div className="flex flex-wrap gap-1.5">
-                          {scenario.tags.slice(0, 2).map((tag, idx) => (
-                            <span
-                              key={idx}
-                              className="text-[10px] px-2 py-0.5 bg-slate-900/60 text-slate-400 border border-slate-700/40 rounded-md"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
+                          <span className="text-[10px] px-2 py-0.5 bg-slate-900/60 text-slate-400 border border-slate-700/40 rounded-md">
+                            #{scenario.category}
+                          </span>
                         </div>
 
                         <button className="btn-3d text-xs font-black px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-[0_2px_0_#065f46]">
@@ -435,7 +430,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                 <span>Active Roleplay:</span>
                 <strong className="text-white">{activeScenario.title}</strong>
                 <span className="text-slate-500">•</span>
-                <span>AI Partner: <strong className="text-indigo-300">{activeScenario.persona}</strong></span>
+                <span>AI Partner: <strong className="text-indigo-300">{activeScenario.persona_name}</strong></span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -460,7 +455,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                     <div className="flex items-end gap-2 max-w-[85%]">
                       {isAi && (
                         <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm flex-shrink-0 shadow-md">
-                          {activeScenario.avatar || '🤖'}
+                          {activeScenario.avatar_emoji || '🤖'}
                         </div>
                       )}
 
@@ -577,9 +572,9 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
               {isSendingTurn && (
                 <div className="flex items-center gap-3 text-slate-400 text-xs py-2 animate-pulse">
                   <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-xs">
-                    {activeScenario.avatar || '🤖'}
+                    {activeScenario.avatar_emoji || '🤖'}
                   </div>
-                  <span>{activeScenario.persona} is typing and analyzing grammar...</span>
+                  <span>{activeScenario.persona_name} is typing and analyzing grammar...</span>
                 </div>
               )}
 
