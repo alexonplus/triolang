@@ -20,8 +20,13 @@ export const WordBankExercise: React.FC<WordBankExerciseProps> = ({
 }) => {
   return (
     <div className="w-full max-w-xl mx-auto space-y-8">
+      
+      {/* Exercise Prompt Title */}
       <div>
-        <h2 className="text-xl sm:text-2xl font-black text-white">
+        <span className="text-[11px] font-mono-tag text-[#8F877B] uppercase block mb-1">
+          Bygg meningen
+        </span>
+        <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#24221F] leading-tight">
           {exercise.prompt_text}
         </h2>
         {exercise.target_audio_text && (
@@ -29,18 +34,19 @@ export const WordBankExercise: React.FC<WordBankExerciseProps> = ({
             onClick={() => {
               speakText(exercise.target_audio_text!, exercise.target_language);
             }}
-            className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-sky-500/20 text-sky-400 hover:bg-sky-500/30 rounded-xl font-bold text-sm transition"
+            className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-[#FFFFFF] border border-[#DDD4C6] text-[#2B5876] hover:bg-[#F5EFEB] rounded-xl font-bold text-xs shadow-[0_2px_0_#DDD4C6] transition"
           >
-            <Volume2 className="w-4 h-4" />
-            <span>Listen ({exercise.target_language === 'sv' ? 'Svenska' : 'English'})</span>
+            <Volume2 className="w-4 h-4 text-[#2B5876]" />
+            <span>Lyssna ({exercise.target_language === 'sv' ? 'Svenska' : 'Engelska'})</span>
           </button>
         )}
       </div>
 
-      <div className="min-h-[90px] p-4 bg-slate-800/80 border-2 border-dashed border-slate-600 rounded-2xl flex flex-wrap gap-2 items-center">
+      {/* Selected Words Canvas (Paper Slot) */}
+      <div className="min-h-[100px] p-5 bg-[#FFFFFF] border-2 border-dashed border-[#D5CBBA] rounded-2xl flex flex-wrap gap-2.5 items-center shadow-inner">
         {selectedWords.length === 0 ? (
-          <span className="text-slate-500 text-sm italic">
-            Tap words below to build your sentence...
+          <span className="text-[#8F877B] font-editorial italic text-base">
+            Tryck på orden nedan för att bygga meningen...
           </span>
         ) : (
           selectedWords.map((word, idx) => (
@@ -50,7 +56,7 @@ export const WordBankExercise: React.FC<WordBankExerciseProps> = ({
                 soundEffects.playClickSound();
                 onRemoveWord(idx);
               }}
-              className="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl shadow-[0_3px_0_#047857] hover:bg-emerald-400 transition transform active:scale-95"
+              className="px-4 py-2 bg-[#2D5A3F] text-[#FAF7F2] font-bold rounded-xl shadow-[0_3px_0_#1E3D2B] border border-[#1E3D2B] hover:bg-[#386D4E] transition transform active:scale-95 text-base"
             >
               {word}
             </button>
@@ -58,6 +64,7 @@ export const WordBankExercise: React.FC<WordBankExerciseProps> = ({
         )}
       </div>
 
+      {/* Word Bank Bank Tiles (Handcrafted letterpress tiles) */}
       <div className="flex flex-wrap gap-3 justify-center pt-4">
         {availableWords.map((item) => (
           <button
@@ -67,10 +74,10 @@ export const WordBankExercise: React.FC<WordBankExerciseProps> = ({
               soundEffects.playClickSound();
               onToggleWord(item.word, item.id);
             }}
-            className={`px-4 py-2.5 font-bold rounded-xl transition text-base ${
+            className={`px-4 py-2.5 rounded-xl font-semibold text-base transition ${
               item.isUsed
-                ? 'bg-slate-800 text-slate-600 border border-slate-700/50 cursor-not-allowed opacity-40'
-                : 'btn-3d-tile'
+                ? 'craft-tile-selected cursor-not-allowed opacity-40'
+                : 'craft-tile'
             }`}
           >
             {item.word}

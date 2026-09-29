@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Wand2, Loader2, AlertCircle } from 'lucide-react';
+import { X, Sparkles, Feather, Loader2, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
 import { soundEffects } from '../services/audio';
 
@@ -11,14 +11,14 @@ interface GenerateLessonModalProps {
 }
 
 const TOPIC_SUGGESTIONS = [
-  { label: '🏥 Doctor & Health (Vårdcentral)', topic: 'At the doctor and health clinic' },
-  { label: '☕️ Ordering Swedish Fika', topic: 'Ordering coffee and pastries at a Swedish cafe' },
-  { label: '💼 Tech Job Interview', topic: 'Software developer job interview' },
-  { label: '🚇 Stockholm Metro & Transit', topic: 'Riding the subway and bus in Stockholm' },
-  { label: '🏨 Hotel Check-in & Keys', topic: 'Checking into a hotel room' },
-  { label: '🍕 Restaurant & Ordering Food', topic: 'Dining at a restaurant and paying the bill' },
-  { label: '🇸🇪 Swedish Midsommar', topic: 'Swedish Midsummer celebration and traditions' },
-  { label: '🛒 Grocery Shopping (ICA & Coop)', topic: 'Supermarket grocery shopping' },
+  { label: '🏥 Läkarbesök & Hälsa (Vårdcentral)', topic: 'At the doctor and health clinic' },
+  { label: '☕️ Svensk Fika & Bakverk', topic: 'Ordering coffee and pastries at a Swedish cafe' },
+  { label: '💼 Tech Jobbintervju', topic: 'Software developer job interview' },
+  { label: '🚇 Stockholms Tunnelbana', topic: 'Riding the subway and bus in Stockholm' },
+  { label: '🏨 Hotellincheckning', topic: 'Checking into a hotel room' },
+  { label: '🍽️ Restaurangbesök & Notan', topic: 'Dining at a restaurant and paying the bill' },
+  { label: '🇸🇪 Svenskt Midsommarfirande', topic: 'Swedish Midsummer celebration and traditions' },
+  { label: '🛒 Handla mat på ICA & Coop', topic: 'Supermarket grocery shopping' },
 ];
 
 export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
@@ -45,25 +45,26 @@ export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
       onClose();
     } catch (err: unknown) {
       console.error('Failed to generate lesson:', err);
-      setError('Could not generate lesson. Please check that the Python backend is running.');
+      setError('Kunde inte generera lektionen. Kontrollera att servern körs.');
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl animate-in zoom-in-95">
+    <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-5 font-sans">
+      <div className="bg-[#FAF7F2] border border-[#E5DDD0] rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-[0_16px_48px_rgba(45,35,25,0.15)] animate-in zoom-in-95">
         
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white shadow">
-              <Wand2 className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-[#24221F] text-[#FAF7F2] flex items-center justify-center shadow-[0_2px_0_#141312] border border-[#141312]">
+              <Feather className="w-5 h-5 text-[#FAF7F2]" />
             </div>
             <div>
-              <h3 className="font-black text-white text-lg">Generate AI Lesson</h3>
-              <p className="text-xs text-indigo-400 font-semibold">
-                Powered by Google Gemini for {courseTitle}
+              <h3 className="font-bold font-display text-[#24221F] text-lg">Skapa Skräddarsydd Lektion</h3>
+              <p className="text-xs text-[#5C564E] font-editorial italic">
+                AI-genererad pedagogisk lektion för {courseTitle}
               </p>
             </div>
           </div>
@@ -71,15 +72,16 @@ export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
           <button
             onClick={onClose}
             disabled={isGenerating}
-            className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition"
+            className="p-2 hover:bg-[#F5EFEB] rounded-xl text-[#8F877B] hover:text-[#24221F] transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Input */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-            Enter Any Topic or Situation:
+          <label className="text-xs font-mono-tag text-[#8F877B] uppercase tracking-wider block">
+            Ange ett ämne eller situation:
           </label>
           <div className="flex gap-2">
             <input
@@ -88,16 +90,17 @@ export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
               onChange={(e) => setTopicInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleGenerate(topicInput)}
               disabled={isGenerating}
-              placeholder="e.g. Renting an apartment, Buying train tickets..."
-              className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              placeholder="T.ex. Hyra stuga i skärgården, Köpa tågbiljett..."
+              className="flex-1 bg-[#FFFFFF] border border-[#DDD4C6] rounded-xl px-4 py-3 text-sm text-[#24221F] placeholder-[#A89E90] focus:outline-none focus:border-[#2D5A3F]"
             />
           </div>
         </div>
 
+        {/* Suggestions */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Popular Suggestions:</span>
+          <label className="text-xs font-mono-tag text-[#8F877B] uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#C9862C]" />
+            <span>Populära ämnesförslag:</span>
           </label>
           <div className="flex flex-wrap gap-2 max-h-44 overflow-y-auto pr-1">
             {TOPIC_SUGGESTIONS.map((item, idx) => (
@@ -108,7 +111,7 @@ export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
                   setTopicInput(item.topic);
                   handleGenerate(item.topic);
                 }}
-                className="text-xs bg-slate-800 hover:bg-indigo-950 hover:border-indigo-500/60 border border-slate-700 text-slate-300 px-3 py-2 rounded-xl transition text-left flex items-center gap-1.5 font-medium"
+                className="text-xs bg-[#FFFFFF] hover:bg-[#F5EFEB] border border-[#DDD4C6] hover:border-[#24221F] text-[#24221F] px-3 py-2 rounded-xl transition text-left flex items-center gap-1.5 font-medium shadow-sm"
               >
                 <span>{item.label}</span>
               </button>
@@ -117,8 +120,8 @@ export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 bg-rose-950/60 border border-rose-500/40 rounded-xl text-xs text-rose-300">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+          <div className="flex items-center gap-2 p-3 bg-[#FAECE8] border border-[#F6D3C8] rounded-xl text-xs text-[#632415]">
+            <AlertCircle className="w-4 h-4 shrink-0 text-[#B34B32]" />
             <span>{error}</span>
           </div>
         )}
@@ -126,17 +129,17 @@ export const GenerateLessonModal: React.FC<GenerateLessonModalProps> = ({
         <button
           onClick={() => handleGenerate(topicInput)}
           disabled={!topicInput.trim() || isGenerating}
-          className="w-full py-3.5 btn-3d bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-[0_4px_0_#3730a3] text-white font-black rounded-2xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3.5 btn-craft btn-stamp-dark text-white rounded-2xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold shadow-md"
         >
           {isGenerating ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Generating curriculum & exercises...</span>
+              <Loader2 className="w-4 h-4 animate-spin text-[#FAF7F2]" />
+              <span className="font-editorial italic">Formar övningar och ordförråd...</span>
             </>
           ) : (
             <>
-              <Sparkles className="w-5 h-5 text-amber-300" />
-              <span>Create Lesson Now</span>
+              <Sparkles className="w-4 h-4 text-[#C9862C]" />
+              <span>Generera lektion nu</span>
             </>
           )}
         </button>

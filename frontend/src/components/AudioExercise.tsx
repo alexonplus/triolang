@@ -29,25 +29,28 @@ export const AudioExercise: React.FC<AudioExerciseProps> = ({
   return (
     <div className="w-full max-w-xl mx-auto space-y-8 text-center">
       <div>
-        <h2 className="text-xl sm:text-2xl font-black text-white">
+        <span className="text-[11px] font-mono-tag text-[#8F877B] uppercase block mb-1">
+          Lyssna & Förstå
+        </span>
+        <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#24221F] leading-tight">
           {exercise.prompt_text}
         </h2>
-        <p className="text-sm text-slate-400 mt-1">
-          Tap the big speaker to replay the voice
+        <p className="text-sm text-[#5C564E] font-editorial italic mt-1">
+          Tryck på högtalaren för att lyssna på uttalet igen
         </p>
       </div>
 
       <div className="flex justify-center py-4">
         <button
           onClick={handlePlayAudio}
-          className="w-24 h-24 rounded-3xl bg-sky-500 hover:bg-sky-400 text-white flex items-center justify-center btn-3d shadow-[0_6px_0_#0284c7] transition transform active:scale-95"
-          title="Play audio"
+          className="w-22 h-22 rounded-3xl bg-[#FFFFFF] hover:bg-[#F5EFEB] text-[#2B5876] border-2 border-[#DDD4C6] flex items-center justify-center btn-craft shadow-[0_4px_0_#DDD4C6] transition transform active:scale-95"
+          title="Spela upp ljud"
         >
-          <Volume2 className="w-12 h-12 stroke-[2.5]" />
+          <Volume2 className="w-10 h-10 stroke-[2.2]" />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left">
         {exercise.options?.map((option, idx) => {
           const isSelected = selectedOption === option;
 
@@ -58,15 +61,21 @@ export const AudioExercise: React.FC<AudioExerciseProps> = ({
                 soundEffects.playClickSound();
                 onSelectOption(option);
               }}
-              className={`p-4 rounded-2xl font-bold transition border-2 flex items-center justify-between ${
+              className={`p-4 rounded-2xl font-bold transition flex items-center justify-between border-2 ${
                 isSelected
-                  ? 'bg-sky-500/20 border-sky-400 text-sky-200 shadow-[0_4px_0_#0284c7]'
-                  : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750 hover:border-slate-600 shadow-[0_4px_0_#0f172a]'
+                  ? 'bg-[#EBF3ED] border-[#2D5A3F] text-[#2D5A3F] shadow-[0_3px_0_#2D5A3F]'
+                  : 'bg-[#FFFFFF] border-[#DDD4C6] text-[#24221F] hover:bg-[#FAF7F2] hover:border-[#24221F] shadow-[0_3px_0_#DDD4C6]'
               }`}
             >
-              <span>{option}</span>
-              <span className="w-7 h-7 rounded-lg border border-slate-600 flex items-center justify-center text-xs font-mono text-slate-400">
-                {idx + 1}
+              <span className="font-semibold text-base">{option}</span>
+              <span
+                className={`w-7 h-7 rounded-lg border flex items-center justify-center text-xs font-mono-tag transition ${
+                  isSelected
+                    ? 'border-[#2D5A3F] bg-[#2D5A3F] text-white'
+                    : 'border-[#DDD4C6] bg-[#FAF7F2] text-[#8F877B]'
+                }`}
+              >
+                {String.fromCharCode(65 + idx)}
               </span>
             </button>
           );

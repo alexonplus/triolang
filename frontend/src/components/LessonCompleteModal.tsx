@@ -15,55 +15,63 @@ export const LessonCompleteModal: React.FC<LessonCompleteModalProps> = ({
 }) => {
   useEffect(() => {
     soundEffects.playVictorySound();
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
+    try {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    } catch {
+      // Fallback
+    }
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border-2 border-emerald-500/50 rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl animate-in zoom-in-95">
+    <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
+      <div className="bg-[#FAF7F2] border border-[#E5DDD0] rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-[0_16px_48px_rgba(45,35,25,0.15)] animate-in zoom-in-95">
         
+        {/* Seal Trophy Stamp */}
         <div className="relative inline-block">
-          <div className="w-24 h-24 rounded-3xl bg-amber-400/20 border-2 border-amber-400 flex items-center justify-center mx-auto text-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.3)]">
-            <Trophy className="w-14 h-14" />
+          <div className="w-20 h-20 rounded-3xl bg-[#FFFFFF] border-2 border-[#C9862C] flex items-center justify-center mx-auto text-[#C9862C] shadow-[0_4px_0_#C9862C]">
+            <Trophy className="w-10 h-10" />
           </div>
-          <span className="absolute -top-2 -right-2 text-2xl animate-bounce">✨</span>
+          <span className="absolute -top-2 -right-2 text-xl">🌿</span>
         </div>
 
         <div>
-          <h2 className="text-3xl font-black text-white">Lektion Klar!</h2>
-          <p className="text-slate-400 text-sm mt-1">{summary.message}</p>
+          <span className="text-[11px] font-mono-tag text-[#2D5A3F] uppercase block mb-1">
+            Kapitelsteg Avklarat
+          </span>
+          <h2 className="text-3xl font-bold font-display text-[#24221F]">Lektionen är klar!</h2>
+          <p className="text-[#5C564E] text-xs font-editorial italic mt-1.5">{summary.message}</p>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl">
-            <Zap className="w-6 h-6 text-amber-400 mx-auto mb-1 fill-amber-400" />
-            <div className="text-xs font-bold text-slate-400 uppercase">Total XP</div>
-            <div className="text-xl font-black text-amber-400">+{summary.xp_gained}</div>
+          <div className="bg-[#FFFFFF] border border-[#DDD4C6] p-3.5 rounded-2xl shadow-sm">
+            <Zap className="w-5 h-5 text-[#C9862C] mx-auto mb-1 fill-[#C9862C]" />
+            <div className="text-[10px] font-mono-tag text-[#8F877B] uppercase">Total XP</div>
+            <div className="text-lg font-bold font-display text-[#24221F]">+{summary.xp_gained}</div>
           </div>
 
-          <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl">
-            <Flame className="w-6 h-6 text-orange-400 mx-auto mb-1 fill-orange-400" />
-            <div className="text-xs font-bold text-slate-400 uppercase">Streak</div>
-            <div className="text-xl font-black text-orange-400">{summary.new_streak} D</div>
+          <div className="bg-[#FFFFFF] border border-[#DDD4C6] p-3.5 rounded-2xl shadow-sm">
+            <Flame className="w-5 h-5 text-[#B34B32] mx-auto mb-1 fill-[#B34B32]" />
+            <div className="text-[10px] font-mono-tag text-[#8F877B] uppercase">Streak</div>
+            <div className="text-lg font-bold font-display text-[#24221F]">{summary.new_streak} d</div>
           </div>
 
-          <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl">
-            <Gem className="w-6 h-6 text-cyan-400 mx-auto mb-1 fill-cyan-400" />
-            <div className="text-xs font-bold text-slate-400 uppercase">Gems</div>
-            <div className="text-xl font-black text-cyan-400">+{summary.gems_awarded}</div>
+          <div className="bg-[#FFFFFF] border border-[#DDD4C6] p-3.5 rounded-2xl shadow-sm">
+            <Gem className="w-5 h-5 text-[#2B5876] mx-auto mb-1 fill-[#2B5876]" />
+            <div className="text-[10px] font-mono-tag text-[#8F877B] uppercase">Gems</div>
+            <div className="text-lg font-bold font-display text-[#24221F]">+{summary.gems_awarded}</div>
           </div>
         </div>
 
         <button
           onClick={onFinish}
-          className="w-full py-4 btn-3d bg-emerald-500 hover:bg-emerald-400 shadow-[0_4px_0_#047857] text-white font-black rounded-2xl flex items-center justify-center gap-2 text-lg"
+          className="w-full py-3.5 btn-craft btn-stamp-forest flex items-center justify-center gap-2 text-sm font-bold shadow-md"
         >
-          <span>Continue Learning</span>
-          <ArrowRight className="w-6 h-6" />
+          <span>Återvänd till kartan</span>
+          <ArrowRight className="w-4 h-4 stroke-[2.5]" />
         </button>
 
       </div>

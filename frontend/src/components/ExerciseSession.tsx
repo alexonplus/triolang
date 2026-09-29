@@ -136,29 +136,34 @@ export const ExerciseSession: React.FC<ExerciseSessionProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-between pb-32">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#24221F] flex flex-col justify-between pb-32 font-sans">
       
+      {/* Top Session Ribbon */}
       <div className="max-w-4xl mx-auto w-full px-4 pt-6 flex items-center gap-4">
         <button
           onClick={onQuit}
-          className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition"
+          className="p-2 text-[#8F877B] hover:text-[#24221F] rounded-xl hover:bg-[#EFE9DF] transition"
+          title="Avsluta lektion"
         >
           <X className="w-6 h-6" />
         </button>
 
-        <div className="flex-1 h-3.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700/60">
+        {/* Linen Progress Track */}
+        <div className="flex-1 h-3.5 bg-[#EBE4D8] rounded-full overflow-hidden border border-[#DDD4C6]">
           <div
-            className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+            className="h-full bg-[#2D5A3F] rounded-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
 
-        <div className="flex items-center gap-1.5 font-black text-rose-400">
-          <Heart className="w-6 h-6 fill-rose-500" />
+        {/* Hearts Badge */}
+        <div className="flex items-center gap-1.5 font-bold text-sm text-[#8A321E] bg-[#FCF0EC] px-3 py-1.5 rounded-xl border border-[#F6D3C8] shadow-[0_1px_0_#EBC1B4]">
+          <Heart className="w-5 h-5 fill-[#B34B32] text-[#B34B32]" />
           <span>{hearts}</span>
         </div>
       </div>
 
+      {/* Main Exercise Area */}
       <main className="max-w-3xl mx-auto w-full px-4 py-8 flex-1 flex flex-col justify-center">
         {currentExercise && (
           <>
@@ -200,24 +205,26 @@ export const ExerciseSession: React.FC<ExerciseSessionProps> = ({
         )}
       </main>
 
+      {/* Bottom Sticky Action Bar */}
       {!result && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/90 border-t border-slate-800 backdrop-blur-md">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#FAF7F2]/95 border-t border-[#E5DDD0] backdrop-blur-md">
           <div className="max-w-2xl mx-auto flex justify-end">
             <button
               onClick={handleCheckAnswer}
               disabled={!canCheck()}
-              className={`w-full sm:w-auto px-10 py-3.5 rounded-2xl font-black text-white text-base btn-3d transition ${
+              className={`w-full sm:w-auto px-10 py-3.5 rounded-2xl font-bold text-base btn-craft transition ${
                 canCheck()
-                  ? 'bg-emerald-500 hover:bg-emerald-400 shadow-[0_4px_0_#047857]'
-                  : 'bg-slate-800 text-slate-600 cursor-not-allowed opacity-60 shadow-none'
+                  ? 'btn-stamp-forest'
+                  : 'bg-[#EDE7DC] text-[#A89E90] border border-[#DDD4C6] cursor-not-allowed opacity-70 shadow-none'
               }`}
             >
-              Check Answer
+              Kontrollera svar
             </button>
           </div>
         </div>
       )}
 
+      {/* Result Drawer */}
       <ResultDrawer result={result} onContinue={handleContinue} />
 
     </div>

@@ -82,15 +82,18 @@ export const PairMatchExercise: React.FC<PairMatchExerciseProps> = ({
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
       <div>
-        <h2 className="text-xl sm:text-2xl font-black text-white">
+        <span className="text-[11px] font-mono-tag text-[#8F877B] uppercase block mb-1">
+          Koppla ihop ordpar
+        </span>
+        <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#24221F] leading-tight">
           {exercise.prompt_text}
         </h2>
-        <p className="text-sm text-slate-400 mt-1">
-          Tap one word in Swedish and its matching word in English
+        <p className="text-sm text-[#5C564E] font-editorial italic mt-1">
+          Tryck på ett ord på svenska och dess matchande översättning på engelska
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 pt-2">
+      <div className="grid grid-cols-2 gap-3.5 pt-2">
         {tiles.map((tile) => {
           const isSelected = selectedTile?.id === tile.id;
 
@@ -101,14 +104,14 @@ export const PairMatchExercise: React.FC<PairMatchExerciseProps> = ({
               onClick={() => handleTileClick(tile)}
               className={`p-4 rounded-2xl font-bold transition flex items-center justify-between border-2 ${
                 tile.isMatched
-                  ? 'bg-slate-900/50 border-slate-800 text-slate-600 opacity-40 cursor-default'
+                  ? 'craft-tile-matched opacity-50 cursor-default shadow-none'
                   : isSelected
-                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-[0_4px_0_#059669]'
-                  : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750 hover:border-slate-600 shadow-[0_4px_0_#0f172a]'
+                  ? 'bg-[#EBF3ED] border-[#2D5A3F] text-[#2D5A3F] shadow-[0_3px_0_#2D5A3F]'
+                  : 'bg-[#FFFFFF] border-[#DDD4C6] text-[#24221F] hover:bg-[#FAF7F2] hover:border-[#24221F] shadow-[0_3px_0_#DDD4C6]'
               }`}
             >
-              <span>{tile.text}</span>
-              {tile.isMatched && <Check className="w-5 h-5 text-slate-600" />}
+              <span className="font-semibold text-base">{tile.text}</span>
+              {tile.isMatched && <Check className="w-4 h-4 text-[#2D5A3F]" />}
             </button>
           );
         })}

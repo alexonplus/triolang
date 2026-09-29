@@ -1,84 +1,217 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --paper-bg: #FAF7F2;
+    --paper-card: #FFFFFF;
+    --paper-parchment: #F5EFEB;
+    --ink-primary: #24221F;
+    --ink-secondary: #5C564E;
+    --ink-muted: #8F877B;
+    --border-craft: #E5DDD0;
+    --border-subtle: #EDE7DD;
+    --stamp-forest: #2D5A3F;
+    --stamp-terracotta: #B34B32;
+    --stamp-ochre: #C9862C;
+    --stamp-fjord: #2B5876;
+    --stamp-indigo: #3F4765;
+  }
+
   body {
-    @apply bg-slate-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-emerald-500 selection:text-white;
+    background-color: var(--paper-bg);
+    color: var(--ink-primary);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, .font-serif-title {
+    font-family: 'Newsreader', 'Fraunces', Georgia, serif;
   }
 }
 
-.btn-3d {
-  transition: all 0.1s ease;
-  position: relative;
-  user-select: none;
+/* -----------------------------------------------------------------------------
+   Handmade & Craft Artisan Utilities
+   ----------------------------------------------------------------------------- */
+.font-display {
+  font-family: 'Fraunces', 'Newsreader', Georgia, serif;
 }
 
-.btn-3d:active {
-  transform: translateY(4px);
+.font-editorial {
+  font-family: 'Newsreader', Georgia, serif;
+}
+
+.font-mono-tag {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Tactile Letterpress & Stamp Buttons */
+.btn-craft {
+  transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  user-select: none;
+  border-radius: 0.875rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-craft:hover {
+  transform: translateY(-1px);
+}
+
+.btn-craft:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 0 0 transparent !important;
+}
+
+/* Woodblock / Stamp Color Themes */
+.btn-stamp-dark {
+  background-color: #24221F;
+  color: #FAF7F2;
+  box-shadow: 0 3px 0 #0F0E0D;
+  border: 1px solid #141312;
+}
+.btn-stamp-dark:hover {
+  background-color: #383430;
+}
+
+.btn-stamp-forest {
+  background-color: #2D5A3F;
+  color: #FAF7F2;
+  box-shadow: 0 3px 0 #1B3827;
+  border: 1px solid #234832;
+}
+.btn-stamp-forest:hover {
+  background-color: #386D4E;
+}
+
+.btn-stamp-ochre {
+  background-color: #C9862C;
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 #8C5917;
+  border: 1px solid #A66E1F;
+}
+.btn-stamp-ochre:hover {
+  background-color: #D99538;
+}
+
+.btn-stamp-terracotta {
+  background-color: #B34B32;
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 #7A2E1C;
+  border: 1px solid #943A24;
+}
+.btn-stamp-terracotta:hover {
+  background-color: #C6573C;
+}
+
+.btn-stamp-fjord {
+  background-color: #2B5876;
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 #1A374A;
+  border: 1px solid #22465E;
+}
+.btn-stamp-fjord:hover {
+  background-color: #366B8F;
+}
+
+.btn-stamp-paper {
+  background-color: #FFFFFF;
+  color: #24221F;
+  box-shadow: 0 3px 0 #DDD4C6;
+  border: 1.5px solid #DDD4C6;
+}
+.btn-stamp-paper:hover {
+  background-color: #F8F5F0;
+  border-color: #C8BDAE;
+}
+
+/* Vintage Paper Tile (for Word Bank / Pairs) */
+.craft-tile {
+  background-color: #FFFFFF;
+  border: 1.5px solid #E2DACB;
+  box-shadow: 0 3px 0 #D5CBBA;
+  color: #24221F;
+  border-radius: 0.75rem;
+  transition: all 0.1s ease;
+  font-weight: 600;
+}
+
+.craft-tile:hover:not(:disabled) {
+  background-color: #FAF7F2;
+  border-color: #C5BBA9;
+  transform: translateY(-1px);
+}
+
+.craft-tile:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.craft-tile-selected {
+  background-color: #EFE9DE !important;
+  border-color: #D3C7B5 !important;
+  box-shadow: none !important;
+  color: #A3998A !important;
+  transform: translateY(2px);
+}
+
+.craft-tile-matched {
+  background-color: #EBF3ED !important;
+  border-color: #9EC4A7 !important;
+  color: #2D5A3F !important;
   box-shadow: none !important;
 }
 
-.btn-3d-green {
-  background-color: #58cc02;
-  box-shadow: 0 4px 0 #46a302;
-  color: white;
+/* Paper Card Surfaces */
+.paper-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5DDD0;
+  box-shadow: 0 2px 0 #EADFCF, 0 8px 24px -4px rgba(45, 35, 25, 0.04);
+  border-radius: 1.25rem;
 }
 
-.btn-3d-green:hover {
-  background-color: #61e002;
+.paper-parchment {
+  background-color: #F5EFEB;
+  border: 1px solid #E2D7C5;
+  box-shadow: 0 2px 0 #D8CCB7;
+  border-radius: 1.25rem;
 }
 
-.btn-3d-blue {
-  background-color: #1cb0f6;
-  box-shadow: 0 4px 0 #1899d6;
-  color: white;
+/* Vintage Stamp / Luggage Tag Label */
+.craft-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.4rem;
+  border: 1px dashed #D3C7B5;
+  background-color: #F8F4EC;
+  color: #5C564E;
 }
 
-.btn-3d-blue:hover {
-  background-color: #23bbfd;
+/* Notebook Stitch & Margin Line */
+.craft-notebook-border {
+  border-left: 3px double #D5CBBA;
 }
 
-.btn-3d-yellow {
-  background-color: #ffc800;
-  box-shadow: 0 4px 0 #e5a400;
-  color: #4b4b4b;
-}
-
-.btn-3d-red {
-  background-color: #ff4b4b;
-  box-shadow: 0 4px 0 #ea2b2b;
-  color: white;
-}
-
-.btn-3d-tile {
-  background-color: #1e293b;
-  box-shadow: 0 4px 0 #0f172a;
-  border: 2px solid #334155;
-  color: #f1f5f9;
-}
-
-.btn-3d-tile:hover {
-  background-color: #334155;
-  border-color: #475569;
-}
-
-.btn-3d-tile-selected {
-  background-color: #0f172a;
-  box-shadow: none;
-  border-color: #1e293b;
-  color: #64748b;
-  transform: translateY(3px);
-}
-
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #FAF7F2;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #D8CEBD;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #BAAC96;
 }

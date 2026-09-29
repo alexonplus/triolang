@@ -10,10 +10,10 @@ import {
   CheckCircle2,
   Lightbulb,
   ArrowLeft,
-  MessageSquare,
   PlusCircle,
   Loader2,
   Languages,
+  BookOpen,
 } from 'lucide-react';
 import type {
   DialogueScenarioSummary,
@@ -118,12 +118,12 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
         title: customTopic.trim(),
         swedish_title: customTopic.trim(),
         level: 'A2-B2',
-        category: 'Custom Topic',
-        persona_name: 'Conversation Partner',
+        category: 'Eget ämne',
+        persona_name: 'Samtalspartner',
         avatar_emoji: '🎭',
-        scenario_context: `Custom interactive roleplay on: "${customTopic.trim()}"`,
+        scenario_context: `Eget interaktivt samtal om: "${customTopic.trim()}"`,
         suggested_chips: selectedLanguage === 'sv' ? ['Det låter spännande!', 'Berätta mer.', 'Vad tycker du själv?'] : ['Sounds exciting!', 'Tell me more.', 'What do you think?'],
-        target_grammar: 'Free roleplay and natural interaction',
+        target_grammar: 'Fritt samtal och naturlig dialog',
       };
 
       setActiveScenario(customScenarioObj);
@@ -217,40 +217,40 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-stone-900/60 backdrop-blur-sm animate-fade-in font-sans">
+      <div className="bg-[#FAF7F2] border border-[#E5DDD0] rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[0_16px_48px_rgba(45,35,25,0.15)] overflow-hidden">
         
         {/* Header Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/90 backdrop-blur">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5DDD0] bg-[#FFFFFF]">
           <div className="flex items-center gap-3">
             {activeScenario ? (
               <button
                 onClick={handleResetToScenarios}
-                className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition"
-                title="Back to Scenario Selection"
+                className="p-2 text-[#8F877B] hover:text-[#24221F] hover:bg-[#F5EFEB] rounded-xl transition"
+                title="Tillbaka till scenarier"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
             ) : null}
 
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-[#2B5876] text-white flex items-center justify-center text-xl shadow-[0_2px_0_#1A374A] border border-[#1A374A]">
               {activeScenario ? activeScenario.avatar_emoji : '🎭'}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-black text-white">
-                  {activeScenario ? activeScenario.title : 'Conversational AI Dialogue Simulator'}
+                <h2 className="text-lg font-bold font-display text-[#24221F]">
+                  {activeScenario ? activeScenario.title : 'Samtalslabb & Dialogsimulator'}
                 </h2>
                 {activeScenario && (
-                  <span className="px-2 py-0.5 text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full">
+                  <span className="px-2 py-0.5 text-[11px] font-mono-tag bg-[#EEF5F9] text-[#2B5876] border border-[#D5E5EE] rounded-md">
                     {activeScenario.persona_name}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#5C564E] font-editorial italic">
                 {activeScenario
-                  ? `Interactive roleplay with real-time grammar feedback`
-                  : `Choose a real-world scenario or create your own topic`}
+                  ? `Interaktivt rollspel med direkt grammatikinsikt`
+                  : `Välj ett vardagsscenario eller skapa ett eget samtalsämne`}
               </p>
             </div>
           </div>
@@ -258,7 +258,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
           <div className="flex items-center gap-3">
             {/* Language Selector */}
             {!activeScenario && (
-              <div className="flex items-center bg-slate-800 border border-slate-700 rounded-xl p-1">
+              <div className="flex items-center bg-[#F5EFEB] border border-[#DDD4C6] rounded-xl p-1">
                 <button
                   onClick={() => {
                     soundEffects.playClickSound();
@@ -266,8 +266,8 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                   }}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition ${
                     selectedLanguage === 'sv'
-                      ? 'bg-emerald-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[#FFFFFF] text-[#24221F] shadow-[0_1px_2px_rgba(0,0,0,0.05)] border border-[#DDD4C6]'
+                      : 'text-[#8F877B] hover:text-[#24221F]'
                   }`}
                 >
                   <span>🇸🇪</span> Svenska
@@ -279,8 +279,8 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                   }}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition ${
                     selectedLanguage === 'en'
-                      ? 'bg-emerald-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-[#FFFFFF] text-[#24221F] shadow-[0_1px_2px_rgba(0,0,0,0.05)] border border-[#DDD4C6]'
+                      : 'text-[#8F877B] hover:text-[#24221F]'
                   }`}
                 >
                   <span>🇬🇧</span> English
@@ -293,7 +293,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                 soundEffects.playClickSound();
                 onClose();
               }}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition"
+              className="p-2 text-[#8F877B] hover:text-[#24221F] hover:bg-[#F5EFEB] rounded-xl transition"
             >
               <X className="w-5 h-5" />
             </button>
@@ -303,21 +303,21 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
         {/* Modal Body */}
         {!activeScenario ? (
           /* =========================================================================
-             1. SCENARIO SELECTION VIEW
+             1. SCENARIO SELECTION VIEW (Artisanal postcards)
              ========================================================================= */
           <div className="p-6 overflow-y-auto max-h-[calc(92vh-90px)] space-y-6">
             
             {/* Custom Topic Generator Card */}
-            <div className="bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-slate-900 border border-indigo-500/30 rounded-2xl p-5 shadow-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
-                <h3 className="text-base font-black text-white">Create Custom Scenario</h3>
-                <span className="text-xs bg-indigo-500/20 text-indigo-300 font-bold px-2 py-0.5 rounded-full border border-indigo-500/30">
-                  AI Dynamic
+            <div className="bg-[#FFFFFF] border border-[#DDD4C6] rounded-2xl p-5 shadow-[0_2px_0_#EADFCF]">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Sparkles className="w-4 h-4 text-[#C9862C]" />
+                <h3 className="text-base font-bold font-display text-[#24221F]">Skapa eget samtalsämne</h3>
+                <span className="text-[10px] font-mono-tag bg-[#FDF6EA] text-[#995E15] border border-[#F3E2C4] px-2 py-0.5 rounded">
+                  AI Atelier
                 </span>
               </div>
-              <p className="text-xs text-slate-300 mb-3">
-                Type any situation, role, or conversation topic you want to simulate (e.g., &quot;Ordering at a Stockholm bakery&quot; or &quot;Tech job interview in London&quot;).
+              <p className="text-xs text-[#5C564E] font-editorial italic mb-3">
+                Beskriv vilken situation du vill simulera (t.ex. &quot;Beställa fika på bageri i Stockholm&quot; eller &quot;Teknisk anställningsintervju i London&quot;).
               </p>
               <div className="flex gap-2">
                 <input
@@ -327,18 +327,18 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                   onKeyDown={(e) => e.key === 'Enter' && handleStartCustomScenario()}
                   placeholder={
                     selectedLanguage === 'sv'
-                      ? 'T.ex. Beställa mat på restaurang eller fråga om vägen i Stockholm...'
-                      : 'E.g., Negotiating rent with a landlord or checking into a hotel...'
+                      ? 'T.ex. Förhandla hyra med en hyresvärd eller fråga om vägen...'
+                      : 'E.g., Negotiating rent with a landlord or checking into a boutique hotel...'
                   }
-                  className="flex-1 bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="flex-1 bg-[#FAF7F2] border border-[#DDD4C6] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#24221F] placeholder-[#A89E90] focus:outline-none focus:border-[#2D5A3F] focus:ring-1 focus:ring-[#2D5A3F]"
                 />
                 <button
                   onClick={handleStartCustomScenario}
                   disabled={!customTopic.trim() || isStartingDialogue}
-                  className="btn-3d px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold rounded-xl text-sm shadow-[0_3px_0_#3730a3] flex items-center gap-2"
+                  className="btn-craft px-5 py-2.5 btn-stamp-dark disabled:opacity-50 text-xs sm:text-sm flex items-center gap-2"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  <span>Start Roleplay</span>
+                  <span>Starta dialog</span>
                 </button>
               </div>
             </div>
@@ -347,18 +347,18 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-emerald-400" />
-                  <h3 className="text-base font-black text-white">Choose a Roleplay Scenario</h3>
+                  <BookOpen className="w-4 h-4 text-[#2D5A3F]" />
+                  <h3 className="text-base font-bold font-display text-[#24221F]">Välj ett hantverksrollspel</h3>
                 </div>
-                <span className="text-xs text-slate-400 font-medium">
-                  {scenarios.length} situations available
+                <span className="text-xs text-[#8F877B] font-mono-tag">
+                  {scenarios.length} scenarier tillgängliga
                 </span>
               </div>
 
               {loadingScenarios ? (
-                <div className="flex items-center justify-center py-12 text-slate-400 gap-3">
-                  <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
-                  <span>Loading scenarios...</span>
+                <div className="flex items-center justify-center py-12 text-[#8F877B] gap-3">
+                  <Loader2 className="w-5 h-5 animate-spin text-[#2D5A3F]" />
+                  <span className="font-editorial text-sm">Hämtar samtalsstudion...</span>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -366,49 +366,49 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                     <div
                       key={scenario.id}
                       onClick={() => handleStartScenario(scenario)}
-                      className="group bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/50 rounded-2xl p-5 cursor-pointer transition-all duration-200 hover:shadow-xl hover:shadow-emerald-950/20 flex flex-col justify-between"
+                      className="group bg-[#FFFFFF] hover:bg-[#FAF7F2] border border-[#E5DDD0] hover:border-[#24221F] rounded-2xl p-5 cursor-pointer transition-all duration-150 shadow-[0_2px_0_#EADFCF] hover:shadow-[0_4px_0_#24221F] flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div className="flex items-center gap-3">
-                            <span className="text-3xl p-2 bg-slate-900/80 rounded-xl border border-slate-700 group-hover:scale-110 transition-transform">
+                            <span className="text-2xl p-2 bg-[#F5EFEB] rounded-xl border border-[#DDD4C6] group-hover:scale-105 transition-transform">
                               {scenario.avatar_emoji}
                             </span>
                             <div>
-                              <h4 className="font-bold text-white text-base group-hover:text-emerald-300 transition">
+                              <h4 className="font-bold text-[#24221F] font-display text-base group-hover:text-[#2D5A3F] transition">
                                 {scenario.title}
                               </h4>
                               {scenario.swedish_title && scenario.swedish_title !== scenario.title && (
-                                <p className="text-xs text-emerald-400/80 font-medium">
+                                <p className="text-xs text-[#5C564E] font-editorial italic">
                                   {scenario.swedish_title}
                                 </p>
                               )}
                             </div>
                           </div>
-                          <span className="text-xs font-black px-2.5 py-1 bg-slate-900 border border-slate-700 text-slate-300 rounded-lg">
+                          <span className="text-[10px] font-mono-tag px-2 py-0.5 bg-[#FAF7F2] border border-[#DDD4C6] text-[#5C564E] rounded">
                             {scenario.level}
                           </span>
                         </div>
 
-                        <p className="text-xs text-slate-300 line-clamp-2 my-2.5">
+                        <p className="text-xs text-[#5C564E] font-sans leading-relaxed line-clamp-2 my-2.5">
                           {scenario.scenario_context}
                         </p>
 
-                        <div className="flex items-center gap-2 text-xs text-slate-400 my-2">
-                          <Bot className="w-3.5 h-3.5 text-indigo-400" />
-                          <span>Persona: <strong className="text-slate-200">{scenario.persona_name}</strong></span>
+                        <div className="flex items-center gap-2 text-xs text-[#8F877B] my-2">
+                          <Bot className="w-3.5 h-3.5 text-[#2B5876]" />
+                          <span>Roll: <strong className="text-[#24221F]">{scenario.persona_name}</strong></span>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-slate-700/50 mt-2">
+                      <div className="flex items-center justify-between pt-3 border-t border-[#EDE7DD] mt-2">
                         <div className="flex flex-wrap gap-1.5">
-                          <span className="text-[10px] px-2 py-0.5 bg-slate-900/60 text-slate-400 border border-slate-700/40 rounded-md">
+                          <span className="text-[10px] font-mono-tag px-2 py-0.5 bg-[#F5EFEB] text-[#5C564E] border border-[#DDD4C6] rounded">
                             #{scenario.category}
                           </span>
                         </div>
 
-                        <button className="btn-3d text-xs font-black px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-[0_2px_0_#065f46]">
-                          Start Chat →
+                        <button className="btn-craft text-xs px-3.5 py-1.5 btn-stamp-forest">
+                          Starta samtal →
                         </button>
                       </div>
                     </div>
@@ -419,32 +419,31 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
           </div>
         ) : (
           /* =========================================================================
-             2. ACTIVE INTERACTIVE CONVERSATION VIEW
+             2. ACTIVE INTERACTIVE CONVERSATION VIEW (Literary correspondence)
              ========================================================================= */
           <div className="flex flex-col flex-1 h-[calc(92vh-90px)]">
             
             {/* Persona Info Ribbon */}
-            <div className="bg-slate-800/60 border-b border-slate-800 px-6 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-slate-300">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>Active Roleplay:</span>
-                <strong className="text-white">{activeScenario.title}</strong>
-                <span className="text-slate-500">•</span>
-                <span>AI Partner: <strong className="text-indigo-300">{activeScenario.persona_name}</strong></span>
+            <div className="bg-[#FFFFFF] border-b border-[#E5DDD0] px-6 py-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-[#5C564E]">
+                <span className="w-2 h-2 rounded-full bg-[#2D5A3F]"></span>
+                <span className="font-bold text-[#24221F] font-display">{activeScenario.title}</span>
+                <span className="text-[#DDD4C6]">•</span>
+                <span>Samtalspartner: <strong className="text-[#2B5876]">{activeScenario.persona_name}</strong></span>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleResetToScenarios}
-                  className="text-xs text-slate-400 hover:text-slate-200 font-bold px-2 py-1 rounded hover:bg-slate-700 transition"
+                  className="text-xs text-[#8F877B] hover:text-[#24221F] font-bold px-2 py-1 rounded-lg hover:bg-[#F5EFEB] transition"
                 >
-                  Change Scenario
+                  Byt scenario
                 </button>
               </div>
             </div>
 
             {/* Chat Timeline */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-4">
+            <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-[#FAF7F2]">
               {messages.map((turn, index) => {
                 const isAi = turn.sender === 'AI';
                 return (
@@ -454,37 +453,37 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                   >
                     <div className="flex items-end gap-2 max-w-[85%]">
                       {isAi && (
-                        <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm flex-shrink-0 shadow-md">
+                        <div className="w-8 h-8 rounded-xl bg-[#2B5876] text-white flex items-center justify-center text-sm flex-shrink-0 shadow-sm border border-[#1A374A]">
                           {activeScenario.avatar_emoji || '🤖'}
                         </div>
                       )}
 
                       <div
-                        className={`rounded-2xl px-4 py-3 shadow-md ${
+                        className={`rounded-2xl px-4 py-3 shadow-[0_2px_0_#EADFCF] ${
                           isAi
-                            ? 'bg-slate-800 border border-slate-700 text-slate-100 rounded-bl-sm'
-                            : 'bg-emerald-600 text-white rounded-br-sm'
+                            ? 'bg-[#FFFFFF] border border-[#DDD4C6] text-[#24221F] rounded-bl-sm'
+                            : 'bg-[#2D5A3F] border border-[#1E3D2B] text-[#FAF7F2] rounded-br-sm'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-4">
-                          <p className="text-sm font-medium leading-relaxed">{turn.text}</p>
+                          <p className="text-sm font-medium leading-relaxed font-sans">{turn.text}</p>
                           
                           {/* Speak & Translate buttons for AI turns */}
                           {isAi && (
                             <div className="flex items-center gap-1.5 flex-shrink-0">
                               <button
                                 onClick={() => speakText(turn.text, selectedLanguage)}
-                                title="Listen to pronunciation"
-                                className="p-1 text-slate-400 hover:text-white transition rounded"
+                                title="Lyssna på uttal"
+                                className="p-1 text-[#8F877B] hover:text-[#24221F] transition rounded"
                               >
                                 <Volume2 className="w-4 h-4" />
                               </button>
                               {turn.translation && (
                                 <button
                                   onClick={() => toggleTranslation(index)}
-                                  title="Toggle English Translation"
+                                  title="Visa engelsk översättning"
                                   className={`p-1 transition rounded text-xs ${
-                                    showTranslations[index] ? 'text-emerald-400' : 'text-slate-400 hover:text-white'
+                                    showTranslations[index] ? 'text-[#2D5A3F]' : 'text-[#8F877B] hover:text-[#24221F]'
                                   }`}
                                 >
                                   <Languages className="w-4 h-4" />
@@ -496,25 +495,25 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
 
                         {/* Translation Accordion */}
                         {isAi && turn.translation && showTranslations[index] && (
-                          <div className="mt-2 pt-2 border-t border-slate-700/60 text-xs text-slate-300 italic">
+                          <div className="mt-2 pt-2 border-t border-[#EDE7DD] text-xs text-[#5C564E] font-editorial italic">
                             🇬🇧 {turn.translation}
                           </div>
                         )}
                       </div>
 
                       {!isAi && (
-                        <div className="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-md">
+                        <div className="w-8 h-8 rounded-xl bg-[#24221F] flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm">
                           <User className="w-4 h-4" />
                         </div>
                       )}
                     </div>
 
-                    {/* ✨ Embedded Real-Time Grammar Correction Card (When user made a mistake) */}
+                    {/* ✨ Embedded Real-Time Grammar Correction Card (Editor's marginalia) */}
                     {!isAi && turn.correction_feedback && turn.correction_feedback.has_errors && (
-                      <div className="max-w-[85%] mr-10 bg-rose-950/40 border border-rose-500/40 rounded-2xl p-4 shadow-lg animate-fade-in space-y-2">
-                        <div className="flex items-center gap-2 text-rose-400 font-bold text-xs">
+                      <div className="max-w-[85%] mr-10 bg-[#FAECE8] border border-[#F6D3C8] rounded-2xl p-4 shadow-sm animate-fade-in space-y-2 text-[#632415]">
+                        <div className="flex items-center gap-2 text-[#B34B32] font-bold text-xs">
                           <AlertTriangle className="w-4 h-4" />
-                          <span>Grammar Insight & Correction</span>
+                          <span className="font-display">Grammatikinsikt & Rättning</span>
                         </div>
 
                         {/* Highlighted Issues */}
@@ -523,7 +522,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                             {turn.correction_feedback.highlighted_issues.map((issue, i) => (
                               <span
                                 key={i}
-                                className="text-[10px] font-bold px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded"
+                                className="text-[10px] font-mono-tag px-2 py-0.5 bg-[#FFFFFF] text-[#8A321E] border border-[#F6D3C8] rounded"
                               >
                                 {issue}
                               </span>
@@ -533,11 +532,11 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
 
                         {/* Corrected Text */}
                         {turn.correction_feedback.corrected_text && (
-                          <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 text-xs flex items-start gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                          <div className="bg-[#FFFFFF] rounded-xl p-2.5 border border-[#F6D3C8] text-xs flex items-start gap-2 shadow-inner">
+                            <CheckCircle2 className="w-4 h-4 text-[#2D5A3F] flex-shrink-0 mt-0.5" />
                             <div>
-                              <span className="text-slate-400 text-[11px] block">Correct phrasing:</span>
-                              <strong className="text-emerald-300 text-sm">
+                              <span className="text-[#8F877B] text-[11px] block font-mono-tag">Korrekt formulering:</span>
+                              <strong className="text-[#2D5A3F] text-sm font-editorial">
                                 {turn.correction_feedback.corrected_text}
                               </strong>
                             </div>
@@ -546,11 +545,11 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
 
                         {/* Pedagogical Rule Explanation */}
                         {turn.correction_feedback.grammar_rule_explanation && (
-                          <div className="text-xs text-slate-300 flex items-start gap-2 bg-slate-900/50 p-2.5 rounded-xl border border-slate-800/80">
-                            <Lightbulb className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                          <div className="text-xs text-[#5C564E] flex items-start gap-2 bg-[#FFFFFF] p-2.5 rounded-xl border border-[#F6D3C8]">
+                            <Lightbulb className="w-4 h-4 text-[#C9862C] flex-shrink-0 mt-0.5" />
                             <div>
-                              <span className="text-amber-300 font-semibold text-[11px] block">Grammar Rule:</span>
-                              <p className="text-slate-300 leading-snug">
+                              <span className="text-[#995E15] font-bold text-[11px] block font-mono-tag">Grammatikregel:</span>
+                              <p className="text-[#5C564E] leading-snug">
                                 {turn.correction_feedback.grammar_rule_explanation}
                               </p>
                             </div>
@@ -559,8 +558,8 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
 
                         {/* Native Alternative Phrasing */}
                         {turn.correction_feedback.improved_native_alternative && (
-                          <div className="text-xs text-slate-400 italic">
-                            💡 Native alternative: &quot;{turn.correction_feedback.improved_native_alternative}&quot;
+                          <div className="text-xs text-[#8F877B] font-editorial italic">
+                            💡 Naturligt uttryckssätt: &quot;{turn.correction_feedback.improved_native_alternative}&quot;
                           </div>
                         )}
                       </div>
@@ -570,11 +569,11 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
               })}
 
               {isSendingTurn && (
-                <div className="flex items-center gap-3 text-slate-400 text-xs py-2 animate-pulse">
-                  <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-xs">
+                <div className="flex items-center gap-3 text-[#8F877B] text-xs py-2 animate-pulse">
+                  <div className="w-7 h-7 rounded-lg bg-[#2B5876] text-white flex items-center justify-center text-xs">
                     {activeScenario.avatar_emoji || '🤖'}
                   </div>
-                  <span>{activeScenario.persona_name} is typing and analyzing grammar...</span>
+                  <span className="font-editorial italic">{activeScenario.persona_name} funderar och formulerar svar...</span>
                 </div>
               )}
 
@@ -583,16 +582,16 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
 
             {/* Quick Suggestion Chips */}
             {suggestedChips && suggestedChips.length > 0 && !isSendingTurn && (
-              <div className="px-6 py-2 bg-slate-900/90 border-t border-slate-800/80 flex items-center gap-2 overflow-x-auto">
-                <span className="text-[11px] font-bold text-slate-400 uppercase flex-shrink-0">
-                  Quick Replies:
+              <div className="px-6 py-2.5 bg-[#FFFFFF] border-t border-[#E5DDD0] flex items-center gap-2 overflow-x-auto">
+                <span className="text-[10px] font-mono-tag text-[#8F877B] uppercase flex-shrink-0">
+                  Snabbsvar:
                 </span>
                 <div className="flex items-center gap-2 flex-wrap">
                   {suggestedChips.map((chip, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(chip)}
-                      className="text-xs font-semibold px-3 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 hover:border-emerald-400 rounded-full transition whitespace-nowrap shadow-sm"
+                      className="text-xs font-semibold px-3 py-1 bg-[#FAF7F2] hover:bg-[#F5EFEB] text-[#24221F] border border-[#DDD4C6] rounded-full transition whitespace-nowrap shadow-sm"
                     >
                       {chip}
                     </button>
@@ -602,7 +601,7 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
             )}
 
             {/* Input Bar */}
-            <div className="p-4 bg-slate-900 border-t border-slate-800 flex items-center gap-3">
+            <div className="p-4 bg-[#FFFFFF] border-t border-[#E5DDD0] flex items-center gap-3">
               <input
                 ref={inputRef}
                 type="text"
@@ -615,14 +614,14 @@ export const ConversationModal: React.FC<ConversationModalProps> = ({
                     : 'Type your message in English...'
                 }
                 disabled={isSendingTurn}
-                className="flex-1 bg-slate-800/90 border border-slate-700 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+                className="flex-1 bg-[#FAF7F2] border border-[#DDD4C6] rounded-2xl px-4 py-3 text-sm text-[#24221F] placeholder-[#A89E90] focus:outline-none focus:border-[#2D5A3F] focus:ring-1 focus:ring-[#2D5A3F] disabled:opacity-50"
               />
 
               <button
                 onClick={() => handleSendMessage()}
                 disabled={!inputMessage.trim() || isSendingTurn}
-                className="btn-3d p-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-2xl shadow-[0_3px_0_#065f46] transition flex items-center justify-center"
-                title="Send message"
+                className="btn-craft p-3 btn-stamp-forest disabled:opacity-50 text-white rounded-2xl shadow-[0_3px_0_#1B3827] transition flex items-center justify-center"
+                title="Skicka meddelande"
               >
                 <Send className="w-5 h-5" />
               </button>

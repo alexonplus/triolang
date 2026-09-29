@@ -113,27 +113,29 @@ export const App: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-        <Loader2 className="w-12 h-12 text-emerald-400 animate-spin mb-4" />
-        <h2 className="text-xl font-black text-white">Välkommen till TrioLang</h2>
-        <p className="text-slate-400 text-sm mt-1">Connecting to Python FastAPI backend...</p>
+      <div className="min-h-screen bg-[#FAF7F2] text-[#24221F] flex flex-col items-center justify-center p-4 font-sans">
+        <div className="w-14 h-14 rounded-3xl bg-[#FFFFFF] border-2 border-[#DDD4C6] flex items-center justify-center text-[#2D5A3F] shadow-[0_4px_0_#DDD4C6] mb-4">
+          <Loader2 className="w-7 h-7 text-[#2D5A3F] animate-spin" />
+        </div>
+        <h2 className="text-2xl font-bold font-display text-[#24221F]">Välkommen till TrioLang</h2>
+        <p className="text-[#5C564E] text-xs font-editorial italic mt-1">Öppnar språkateljén och ansluter till backend...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 text-center">
-        <div className="bg-slate-800 border border-slate-700 p-8 rounded-3xl max-w-md w-full space-y-4">
-          <AlertCircle className="w-12 h-12 text-rose-400 mx-auto" />
-          <h2 className="text-xl font-black text-white">Connection Error</h2>
-          <p className="text-sm text-slate-400">{error}</p>
+      <div className="min-h-screen bg-[#FAF7F2] text-[#24221F] flex flex-col items-center justify-center p-4 text-center font-sans">
+        <div className="bg-[#FFFFFF] border border-[#DDD4C6] p-8 rounded-3xl max-w-md w-full space-y-4 shadow-[0_4px_0_#DDD4C6]">
+          <AlertCircle className="w-10 h-10 text-[#B34B32] mx-auto" />
+          <h2 className="text-xl font-bold font-display text-[#24221F]">Anslutningsfel</h2>
+          <p className="text-xs text-[#5C564E] leading-relaxed">{error}</p>
           <button
             onClick={loadInitialData}
-            className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 font-black text-white rounded-xl flex items-center justify-center gap-2 btn-3d shadow-[0_3px_0_#047857]"
+            className="w-full py-3.5 btn-craft btn-stamp-forest text-white rounded-xl flex items-center justify-center gap-2 text-xs font-bold"
           >
             <RefreshCw className="w-4 h-4" />
-            <span>Try Again</span>
+            <span>Försök igen</span>
           </button>
         </div>
       </div>
@@ -157,7 +159,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#24221F] flex flex-col font-sans selection:bg-[#2D5A3F] selection:text-white">
       <Header
         user={user}
         courses={courses}

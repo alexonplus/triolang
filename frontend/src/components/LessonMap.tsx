@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, Check, BookOpen, Coffee, Compass, Sparkles, Gift, Wand2 } from 'lucide-react';
+import { Star, Check, BookOpen, Coffee, Compass, Sparkles, Gift, Feather, Bookmark } from 'lucide-react';
 import type { Unit } from '../types';
 import { soundEffects } from '../services/audio';
 
@@ -11,11 +11,20 @@ interface LessonMapProps {
 }
 
 const ICON_MAP: Record<string, React.ReactNode> = {
-  Sparkles: <Sparkles className="w-6 h-6" />,
-  Coffee: <Coffee className="w-6 h-6" />,
-  Compass: <Compass className="w-6 h-6" />,
-  BookOpen: <BookOpen className="w-6 h-6" />,
+  Sparkles: <Sparkles className="w-5 h-5" />,
+  Coffee: <Coffee className="w-5 h-5" />,
+  Compass: <Compass className="w-5 h-5" />,
+  BookOpen: <BookOpen className="w-5 h-5" />,
 };
+
+// Earthy, handcrafted Scandinavian color sets for Chapters
+const CHAPTER_THEMES = [
+  { bg: 'bg-[#2D5A3F]', border: 'border-[#1E3D2B]', shadow: 'shadow-[0_3px_0_#1E3D2B]', tag: 'Kapitel I' },
+  { bg: 'bg-[#B34B32]', border: 'border-[#7A2E1C]', shadow: 'shadow-[0_3px_0_#7A2E1C]', tag: 'Kapitel II' },
+  { bg: 'bg-[#2B5876]', border: 'border-[#1A374A]', shadow: 'shadow-[0_3px_0_#1A374A]', tag: 'Kapitel III' },
+  { bg: 'bg-[#C9862C]', border: 'border-[#8C5917]', shadow: 'shadow-[0_3px_0_#8C5917]', tag: 'Kapitel IV' },
+  { bg: 'bg-[#3F4765]', border: 'border-[#282E45]', shadow: 'shadow-[0_3px_0_#282E45]', tag: 'Kapitel V' },
+];
 
 export const LessonMap: React.FC<LessonMapProps> = ({
   units,
@@ -24,100 +33,137 @@ export const LessonMap: React.FC<LessonMapProps> = ({
   onOpenGenerateModal,
 }) => {
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-black text-white tracking-tight">
+    <div className="max-w-2xl mx-auto py-10 px-4">
+      
+      {/* Editorial Header */}
+      <div className="text-center mb-10 pb-6 border-b border-[#E5DDD0]">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFE9DF] border border-[#DDD4C6] text-[11px] font-mono-tag text-[#5C564E] uppercase mb-3">
+          <Bookmark className="w-3 h-3 text-[#2D5A3F]" />
+          <span>Språkkurs & Studieplan</span>
+        </div>
+        
+        <h1 className="text-3xl sm:text-4xl font-bold font-display text-[#24221F] tracking-tight">
           {activeCourseTitle}
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Master daily vocabulary, Swedish fika dialogues, and conversational grammar
+        <p className="text-[#5C564E] font-editorial text-base sm:text-lg italic mt-1.5 max-w-lg mx-auto">
+          Ett hantverksmässigt tillvägagångssätt för naturlig språkinlärning och flyt
         </p>
 
-        <div className="mt-4">
+        <div className="mt-5">
           <button
             onClick={() => {
               soundEffects.playClickSound();
               onOpenGenerateModal();
             }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white font-black text-sm rounded-2xl shadow-[0_4px_0_#3730a3] btn-3d transition"
+            className="btn-craft px-5 py-2.5 text-xs sm:text-sm bg-[#FFFFFF] hover:bg-[#F5EFEB] text-[#24221F] border border-[#DDD4C6] shadow-[0_3px_0_#DDD4C6] transition"
           >
-            <Wand2 className="w-4 h-4 text-amber-300" />
-            <span>✨ Generate Custom AI Lesson</span>
+            <Feather className="w-4 h-4 text-[#B34B32] mr-2" />
+            <span className="font-bold">Skapa anpassad AI-lektion</span>
           </button>
         </div>
       </div>
 
-      <div className="space-y-12">
-        {units.map((unit) => (
-          <div key={unit.id} className="relative">
-            <div
-              className="rounded-2xl p-5 mb-8 shadow-lg border border-slate-700 text-white relative overflow-hidden"
-              style={{ backgroundColor: unit.theme_color || '#10B981' }}
-            >
-              <div className="relative z-10 flex items-start justify-between">
-                <div>
-                  <div className="text-xs font-black uppercase tracking-wider opacity-80">
-                    {unit.title}
-                  </div>
-                  <h2 className="text-xl font-black mt-0.5">{unit.swedish_title}</h2>
-                  <p className="text-sm opacity-90 mt-1 max-w-md">{unit.description}</p>
-                </div>
-                <div className="p-3 bg-white/15 rounded-2xl backdrop-blur-sm">
-                  {ICON_MAP[unit.icon_name] || <Sparkles className="w-6 h-6" />}
-                </div>
-              </div>
-            </div>
+      {/* Chapters & Stamped Lesson Nodes */}
+      <div className="space-y-16">
+        {units.map((unit, unitIdx) => {
+          const theme = CHAPTER_THEMES[unitIdx % CHAPTER_THEMES.length];
 
-            <div className="flex flex-col items-center space-y-6">
-              {unit.lessons.map((lesson, idx) => {
-                const xOffsets = [0, 40, -40, 20, -20];
-                const offset = xOffsets[idx % xOffsets.length];
+          return (
+            <div key={unit.id} className="relative">
+              
+              {/* Chapter Card (Styled like a book cover / field guide chapter) */}
+              <div
+                className={`rounded-2xl p-6 mb-10 text-[#FAF7F2] relative overflow-hidden border ${theme.border} ${theme.bg} ${theme.shadow}`}
+              >
+                {/* Subtle paper texture overlay */}
+                <div className="absolute inset-0 bg-[radial-gradient(#FAF7F2_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
 
-                return (
-                  <div
-                    key={lesson.id}
-                    className="flex flex-col items-center"
-                    style={{ transform: `translateX(${offset}px)` }}
-                  >
-                    <button
-                      onClick={() => {
-                        soundEffects.playClickSound();
-                        onStartLesson(lesson.id);
-                      }}
-                      className={`relative w-20 h-20 rounded-full flex items-center justify-center font-black transition-all btn-3d ${
-                        lesson.is_completed
-                          ? 'bg-amber-400 text-amber-950 shadow-[0_6px_0_#d97706] hover:bg-amber-300'
-                          : 'bg-emerald-500 text-white shadow-[0_6px_0_#059669] hover:bg-emerald-400'
-                      }`}
-                      title={lesson.title}
-                    >
-                      {lesson.is_completed ? (
-                        <Check className="w-10 h-10 stroke-[3.5]" />
-                      ) : (
-                        <Star className="w-9 h-9 fill-white" />
-                      )}
-
-                      <span className="absolute -bottom-2 bg-slate-900 border border-slate-700 text-emerald-400 text-xs font-bold px-2 py-0.5 rounded-full shadow">
-                        +{lesson.xp_reward} XP
+                <div className="relative z-10 flex items-start justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-mono-tag tracking-widest uppercase bg-black/25 px-2 py-0.5 rounded border border-white/20">
+                        {theme.tag}
                       </span>
-                    </button>
+                      <span className="text-xs font-semibold uppercase tracking-wider opacity-90">
+                        {unit.title}
+                      </span>
+                    </div>
 
-                    <span className="mt-4 font-bold text-xs text-slate-300 max-w-[150px] text-center">
-                      {lesson.swedish_title}
-                    </span>
+                    <h2 className="text-2xl font-bold font-display mt-1 text-white">
+                      {unit.swedish_title}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#FAF7F2]/85 mt-1.5 max-w-md leading-relaxed font-sans">
+                      {unit.description}
+                    </p>
                   </div>
-                );
-              })}
 
-              <div className="pt-4 flex flex-col items-center">
-                <div className="w-16 h-16 rounded-2xl bg-slate-800 border-2 border-dashed border-amber-500/50 flex items-center justify-center text-amber-400 shadow-inner">
-                  <Gift className="w-8 h-8 animate-bounce" />
+                  <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm border border-white/25 flex-shrink-0">
+                    {ICON_MAP[unit.icon_name] || <Sparkles className="w-5 h-5 text-white" />}
+                  </div>
                 </div>
-                <span className="text-xs text-slate-500 font-bold mt-2">Unit Bonus Chest</span>
+              </div>
+
+              {/* Lesson Pathway (Handcrafted letterpress seals) */}
+              <div className="flex flex-col items-center space-y-8 relative">
+                
+                {/* Background dashed journey thread */}
+                <div className="absolute top-4 bottom-12 w-0.5 border-r-2 border-dashed border-[#D5CBBA] z-0" />
+
+                {unit.lessons.map((lesson, idx) => {
+                  const xOffsets = [0, 42, -42, 24, -24];
+                  const offset = xOffsets[idx % xOffsets.length];
+
+                  return (
+                    <div
+                      key={lesson.id}
+                      className="flex flex-col items-center relative z-10"
+                      style={{ transform: `translateX(${offset}px)` }}
+                    >
+                      <button
+                        onClick={() => {
+                          soundEffects.playClickSound();
+                          onStartLesson(lesson.id);
+                        }}
+                        className={`relative w-18 h-18 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center font-bold transition-all btn-craft ${
+                          lesson.is_completed
+                            ? 'bg-[#EBF3ED] text-[#2D5A3F] border-2 border-[#2D5A3F] shadow-[0_4px_0_#2D5A3F] hover:bg-[#DEF0E2]'
+                            : 'bg-[#FFFFFF] text-[#24221F] border-2 border-[#DDD4C6] shadow-[0_4px_0_#DDD4C6] hover:bg-[#FAF7F2] hover:border-[#24221F] hover:shadow-[0_4px_0_#24221F]'
+                        }`}
+                        title={lesson.title}
+                      >
+                        {lesson.is_completed ? (
+                          <Check className="w-8 h-8 stroke-[3]" />
+                        ) : (
+                          <Star className="w-7 h-7 fill-[#C9862C] text-[#C9862C]" />
+                        )}
+
+                        {/* XP Badge Stamp */}
+                        <span className="absolute -bottom-2.5 bg-[#FAF7F2] border border-[#D5CBBA] text-[#5C564E] text-[10px] font-mono-tag px-2 py-0.5 rounded-full shadow-sm">
+                          +{lesson.xp_reward} XP
+                        </span>
+                      </button>
+
+                      <span className="mt-4 font-bold text-xs text-[#24221F] max-w-[160px] text-center font-editorial leading-tight">
+                        {lesson.swedish_title}
+                      </span>
+                    </div>
+                  );
+                })}
+
+                {/* Chapter Completion Seal / Chest */}
+                <div className="pt-4 flex flex-col items-center relative z-10">
+                  <div className="w-14 h-14 rounded-2xl bg-[#FFFFFF] border-2 border-dashed border-[#C9862C] flex items-center justify-center text-[#C9862C] shadow-[0_2px_0_#EADFCF]">
+                    <Gift className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <span className="text-[11px] text-[#8F877B] font-mono-tag uppercase mt-2">
+                    Kapitelbonus
+                  </span>
+                </div>
+
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
