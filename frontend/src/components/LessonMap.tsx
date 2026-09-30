@@ -2,10 +2,12 @@ import React from 'react';
 import { Star, Check, BookOpen, Coffee, Compass, Sparkles, Gift, Feather, Bookmark } from 'lucide-react';
 import type { Unit } from '../types';
 import { soundEffects } from '../services/audio';
+import { DailyWisdomCard } from './DailyWisdomCard';
 
 interface LessonMapProps {
   units: Unit[];
   activeCourseTitle: string;
+  targetLanguage?: string;
   onStartLesson: (lessonId: number) => void;
   onOpenGenerateModal: () => void;
 }
@@ -29,6 +31,7 @@ const CHAPTER_THEMES = [
 export const LessonMap: React.FC<LessonMapProps> = ({
   units,
   activeCourseTitle,
+  targetLanguage = 'sv',
   onStartLesson,
   onOpenGenerateModal,
 }) => {
@@ -36,7 +39,7 @@ export const LessonMap: React.FC<LessonMapProps> = ({
     <div className="max-w-2xl mx-auto py-10 px-4">
       
       {/* Editorial Header */}
-      <div className="text-center mb-10 pb-6 border-b border-[#E5DDD0]">
+      <div className="text-center mb-8 pb-6 border-b border-[#E5DDD0]">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFE9DF] border border-[#DDD4C6] text-[11px] font-mono-tag text-[#5C564E] uppercase mb-3">
           <Bookmark className="w-3 h-3 text-[#2D5A3F]" />
           <span>Språkkurs & Studieplan</span>
@@ -62,6 +65,9 @@ export const LessonMap: React.FC<LessonMapProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Dagens Visdomsord & Ordspråk Banner */}
+      <DailyWisdomCard language={targetLanguage} />
 
       {/* Chapters & Stamped Lesson Nodes */}
       <div className="space-y-16">

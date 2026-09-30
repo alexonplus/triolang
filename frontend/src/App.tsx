@@ -181,6 +181,7 @@ export const App: React.FC = () => {
               ? `${activeCourse.native_title} (${activeCourse.title})`
               : 'Swedish (Svenska)'
           }
+          targetLanguage={activeCourse?.target_language || 'sv'}
           onStartLesson={handleStartLesson}
           onOpenGenerateModal={() => setIsGenerateModalOpen(true)}
         />
