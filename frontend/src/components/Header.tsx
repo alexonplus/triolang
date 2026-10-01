@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen, Clock, MessageSquare, ChevronDown } from 'lucide-react';
+import { Flame, Heart, Gem, Bot, RefreshCw, Target, BookOpen, Clock, MessageSquare, Volume2, ChevronDown } from 'lucide-react';
 import type { Course, UserStats } from '../types';
 import { soundEffects } from '../services/audio';
 
@@ -13,6 +13,7 @@ interface HeaderProps {
   onOpenGrammar?: () => void;
   onOpenTenses?: () => void;
   onOpenDialogue?: () => void;
+  onOpenPronunciation?: () => void;
   onRefillHearts: () => void;
 }
 
@@ -26,6 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenGrammar,
   onOpenTenses,
   onOpenDialogue,
+  onOpenPronunciation,
   onRefillHearts,
 }) => {
   const currentCourse = courses.find((c) => c.id === currentCourseId) || courses[0];
@@ -177,6 +179,21 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Target className="w-3.5 h-3.5 text-[#8A321E] mr-1.5" />
               <span className="font-bold">Nivåtest</span>
+            </button>
+          )}
+
+          {/* Pronunciation Button */}
+          {onOpenPronunciation && (
+            <button
+              onClick={() => {
+                soundEffects.playClickSound();
+                onOpenPronunciation();
+              }}
+              title="Uttalsstudio & Fonetiklabb"
+              className="btn-craft px-3 py-1.5 text-xs bg-[#FFFFFF] hover:bg-[#F7F3EC] text-[#24221F] border border-[#DDD4C6] shadow-[0_2.5px_0_#DDD4C6]"
+            >
+              <Volume2 className="w-3.5 h-3.5 text-[#5C564E] mr-1.5" />
+              <span className="font-bold">Uttal</span>
             </button>
           )}
 

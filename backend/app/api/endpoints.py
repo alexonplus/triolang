@@ -42,7 +42,9 @@ from app.models.schemas import (
     DialogueStartResponse,
     DialogueTurnRequest,
     DialogueTurnResponse,
+    PronunciationGuideResponse,
 )
+from app.data.pronunciation_data import PRONUNCIATION_DATA
 from app.services.game_engine import evaluate_exercise_answer, award_lesson_rewards
 from app.services.ai_tutor import ask_ai_tutor
 from app.services.lesson_generator import generate_and_save_ai_lesson
@@ -450,6 +452,23 @@ async def send_dialogue_turn(
         history=payload.history,
         custom_topic=payload.custom_topic,
     )
+
+
+# ------------------------------------------------------------------------------
+# 9. Pronunciation & Phonetics Studio Endpoints
+# ------------------------------------------------------------------------------
+@router.get("/pronunciation/guide", response_model=PronunciationGuideResponse, summary="Get structured phonetics guide, minimal pairs, vowel rules and listening quiz")
+def get_pronunciation_guide(language: str = "sv") -> PronunciationGuideResponse:
+    lang_key = "sv" if language.startswith("sv") else "sv"
+    data = PRONUNCIATION_DATA.get(lang_key, PRONUNCIATION_DATA["sv"])
+    return PronunciationGuideResponse(
+        language=lang_key,
+        vowel_length_rule=data["vowel_length_rule"],
+        vowel_groups=data["vowel_groups"],
+        pitch_accents=data["pitch_accents"],
+        listening_quiz=data.get("listening_quiz", []),
+    )
+
 
 
 

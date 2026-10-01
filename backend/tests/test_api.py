@@ -260,5 +260,20 @@ def test_dialogue_simulator_and_grammar_correction():
         assert "Igår drack jag" in turn_data["correction_feedback"]["corrected_text"]
 
 
+def test_pronunciation_guide_endpoint():
+    with TestClient(app) as client:
+        resp = client.get("/api/pronunciation/guide?language=sv")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["language"] == "sv"
+        assert "vowel_length_rule" in data
+        assert len(data["vowel_length_rule"]["minimal_pairs"]) >= 3
+        assert "vowel_groups" in data
+        assert len(data["vowel_groups"]["hard_vowels"]["vowels"]) == 4
+        assert len(data["vowel_groups"]["soft_vowels"]["vowels"]) == 5
+        assert len(data["listening_quiz"]) >= 1
+
+
+
 
 

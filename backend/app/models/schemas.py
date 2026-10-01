@@ -352,4 +352,81 @@ class DialogueTurnResponse(BaseModel):
     suggested_next_chips: List[str] = []
 
 
+# ------------------------------------------------------------------------------
+# Pronunciation & Phonetics Schemas
+# ------------------------------------------------------------------------------
+class MinimalPairSchema(BaseModel):
+    pair_id: str
+    long_word: str
+    long_ipa: str
+    long_translation: str
+    long_audio_text: str
+    short_word: str
+    short_ipa: str
+    short_translation: str
+    short_audio_text: str
+    explanation: str
+
+
+class VowelLengthRuleSchema(BaseModel):
+    title: str
+    description: str
+    formula: str
+    minimal_pairs: List[MinimalPairSchema] = []
+
+
+class VowelExampleSchema(BaseModel):
+    word: str
+    pronunciation: str
+    translation: str
+
+
+class VowelGroupItemSchema(BaseModel):
+    title: str
+    vowels: List[str]
+    rule: str
+    examples: List[VowelExampleSchema] = []
+
+
+class VowelGroupsSchema(BaseModel):
+    hard_vowels: VowelGroupItemSchema
+    soft_vowels: VowelGroupItemSchema
+
+
+class PitchAccentPairSchema(BaseModel):
+    word_1: str
+    accent_1: str
+    meaning_1: str
+    audio_text_1: str
+    word_2: str
+    accent_2: str
+    meaning_2: str
+    audio_text_2: str
+
+
+class PitchAccentsSchema(BaseModel):
+    title: str
+    description: str
+    pairs: List[PitchAccentPairSchema] = []
+
+
+class ListeningQuizQuestionSchema(BaseModel):
+    id: int
+    prompt: str
+    target_word: str
+    audio_text: str
+    options: List[str]
+    correct_answer: str
+    explanation: str
+
+
+class PronunciationGuideResponse(BaseModel):
+    language: str
+    vowel_length_rule: VowelLengthRuleSchema
+    vowel_groups: VowelGroupsSchema
+    pitch_accents: PitchAccentsSchema
+    listening_quiz: List[ListeningQuizQuestionSchema] = []
+
+
+
 

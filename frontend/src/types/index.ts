@@ -267,5 +267,79 @@ export interface DialogueTurnResponse {
   suggested_next_chips: string[];
 }
 
+export interface MinimalPairItem {
+  pair_id: string;
+  long_word: string;
+  long_ipa: string;
+  long_translation: string;
+  long_audio_text: string;
+  short_word: string;
+  short_ipa: string;
+  short_translation: string;
+  short_audio_text: string;
+  explanation: string;
+}
+
+export interface VowelLengthRule {
+  title: string;
+  description: string;
+  formula: string;
+  minimal_pairs: MinimalPairItem[];
+}
+
+export interface VowelExample {
+  word: string;
+  pronunciation: string;
+  translation: string;
+}
+
+export interface VowelGroupItem {
+  title: string;
+  vowels: string[];
+  rule: string;
+  examples: VowelExample[];
+}
+
+export interface VowelGroups {
+  hard_vowels: VowelGroupItem;
+  soft_vowels: VowelGroupItem;
+}
+
+export interface PitchAccentPair {
+  word_1: string;
+  accent_1: string;
+  meaning_1: string;
+  audio_text_1: string;
+  word_2: string;
+  accent_2: string;
+  meaning_2: string;
+  audio_text_2: string;
+}
+
+export interface PitchAccents {
+  title: string;
+  description: string;
+  pairs: PitchAccentPair[];
+}
+
+export interface ListeningQuizQuestion {
+  id: number;
+  prompt: string;
+  target_word: string;
+  audio_text: string;
+  options: string[];
+  correct_answer: string;
+  explanation: string;
+}
+
+export interface PronunciationGuideResponse {
+  language: string;
+  vowel_length_rule: VowelLengthRule;
+  vowel_groups: VowelGroups;
+  pitch_accents: PitchAccents;
+  listening_quiz: ListeningQuizQuestion[];
+}
+
+
 
 
